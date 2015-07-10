@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class MyMenu : MonoBehaviour {
+public class LoginMenu : MonoBehaviour {
 
 	public string curPage;
 	string[] pages = new string[]{"entername","checkname","welcome","selectteam","entercode","playerstat","about","scoreboard"}; 
@@ -44,7 +44,9 @@ public class MyMenu : MonoBehaviour {
 			//reset bei back
 			myTeam = "unselected";  
 
-		} else if (curPage == "checkname"){
+		}
+
+		else if (curPage == "checkname"){
 			Logo.SetActive(true);
 			InputField.SetActive(true);
 			Teams.SetActive(false);
@@ -60,7 +62,9 @@ public class MyMenu : MonoBehaviour {
 			StartCoroutine(Wait(3.0F));
 
 
-		} else if (curPage == "welcome"){
+		}
+
+		else if (curPage == "welcome"){
 			Logo.SetActive(true);
 			InputField.SetActive(true);
 			Teams.SetActive(false);
@@ -77,7 +81,9 @@ public class MyMenu : MonoBehaviour {
 			WarnTxt.SetActive(true);
 			WarnTxt.GetComponent<TextMesh>().text = "WARNING!\nDo not loose \nyour secret code!";
 
-		} else if (curPage == "selectteam"){
+		}
+
+		else if (curPage == "selectteam"){
 			Logo.SetActive(true);
 			InputField.SetActive(false);
 			Teams.SetActive(true);
@@ -95,7 +101,9 @@ public class MyMenu : MonoBehaviour {
 
 			WarnTxt.SetActive(true);
 			WarnTxt.GetComponent<TextMesh>().text = "WARNING!\nYou can’t change \nyour team later!";
-		} else if (curPage == "entercode"){
+		}
+
+		else if (curPage == "entercode"){
 			Logo.SetActive(true);
 			InputField.SetActive(true);
 			Teams.SetActive(false);

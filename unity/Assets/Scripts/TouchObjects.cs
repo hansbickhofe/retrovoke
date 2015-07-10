@@ -3,11 +3,11 @@ using System.Collections;
 
 public class TouchObjects : MonoBehaviour {
 
-	MyMenu mainScript;
+	LoginMenu mainScript;
 	string stringToEdit = "Debug";
 
 	void Start(){
-		mainScript = GetComponent<MyMenu>();
+		mainScript = GetComponent<LoginMenu>();
 	}
 
 	void Update () {
@@ -41,7 +41,7 @@ public class TouchObjects : MonoBehaviour {
 	void Click(string Target){
 		if (mainScript.curPage == "entername"){
 			if (Target == "ButtonAction") mainScript.curPage = "checkname";
-			if (Target == "ButtonAbout") mainScript.curPage = "about";
+			if (Target == "ButtonAbout") Application.LoadLevel("about");
 		}
 
 		else if (mainScript.curPage == "welcome"){
@@ -65,6 +65,6 @@ public class TouchObjects : MonoBehaviour {
 	}
 
 	void OnGUI() {
-		stringToEdit = GUI.TextField(new Rect(10, 10, 200, 20), stringToEdit, 25);
+		stringToEdit = GUI.TextField(new Rect(0, 0, 400, 50), stringToEdit, 25);
 	}
 }
