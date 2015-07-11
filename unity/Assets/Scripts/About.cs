@@ -41,5 +41,10 @@ public class About : MonoBehaviour {
 
 	void Click(string Target){
 		if (Target == "ButtonBack") Application.LoadLevel("login");
+
+		if (Target == "space") Application.LoadLevel("player");
+		if (Target == "pac") Application.LoadLevel("score");
+		if (Target == "galaga") Application.LoadLevel("login");
 	}
 }
+
