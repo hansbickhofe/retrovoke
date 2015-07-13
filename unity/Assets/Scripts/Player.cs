@@ -11,7 +11,8 @@ public class Player : MonoBehaviour {
 	
 	// Use this for initialization
 	void Start () {
-		
+		TextMesh textObject0 = GameObject.Find("Payerscore").GetComponent<TextMesh>();
+		textObject0.text = "12345";
 	}
 	
 	void Update () {
