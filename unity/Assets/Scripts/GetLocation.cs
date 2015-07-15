@@ -6,6 +6,7 @@ public class GetLocation : MonoBehaviour
 	public string output = "Debug";
 	public float myLat;
 	public float myLon;
+	public bool gpsReady = false;
 
 	void Start() {
 		output = "Start";
@@ -51,15 +52,11 @@ public class GetLocation : MonoBehaviour
 			// Access granted and location value could be retrieved
 			//swprint("Location: " + Input.location.lastData.latitude + " " + Input.location.lastData.longitude + " " + Input.location.lastData.altitude + " " + Input.location.lastData.horizontalAccuracy + " " + Input.location.lastData.timestamp);
 			output = "Location: " + Input.location.lastData.latitude + " " + Input.location.lastData.longitude + " " + Input.location.lastData.altitude + " " + Input.location.lastData.horizontalAccuracy + " " + Input.location.lastData.timestamp;
-			myLat = Input.location.lastData.latitude;
-			myLon = Input.location.lastData.longitude;
+			Input.compass.enabled = true;
+			gpsReady = true;
 		}
 		
 		// Stop service if there is no need to query location updates continuously
-		Input.location.Stop();
-	}
-
-	void OnGUI() {
-		output = GUI.TextField(new Rect(0, 0, 400, 50), output, 25);
+		//Input.location.Stop();
 	}
 }
