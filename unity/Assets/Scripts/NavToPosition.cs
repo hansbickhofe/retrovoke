@@ -15,6 +15,8 @@ public class NavToPosition : MonoBehaviour {
 	float posX;
 	float posZ;
 
+	float shipDir;
+
 	public GameObject player;
 	Vector3 playerRotation;
 
@@ -22,9 +24,14 @@ public class NavToPosition : MonoBehaviour {
 	bool inRange = false;
 	public GameObject OutText;
 
+	public float demoSpeed;
+
 	// Use this for initialization
 	void Start () {
 		myGPS = GetComponent<GetLocation>();
+
+		posX = (6.937723f - lon)*multiX;
+		posZ = (50.944303f - lat)*multiY;
 	}
 	
 	// Update is called once per frame
@@ -32,11 +39,30 @@ public class NavToPosition : MonoBehaviour {
 		if (myGPS.gpsReady){
 			posX = (Input.location.lastData.longitude - lon)*multiX;
 			posZ = (Input.location.lastData.latitude - lat)*multiY;
-			playerRotation = new Vector3(0,Input.compass.trueHeading,0);
+			shipDir = Input.compass.trueHeading;
 		} else {
-			posX = (6.937723f - lon)*multiX;
-			posZ = (50.944303f - lat)*multiY;
+			 
 			playerRotation = new Vector3(0,0,0);
+
+			if (Input.GetKey(KeyCode.LeftArrow)) {
+				posX -= demoSpeed;
+				shipDir = -90;
+			}
+
+			if (Input.GetKey(KeyCode.RightArrow)) {
+				posX += demoSpeed;
+				shipDir = 90;
+			}
+
+			if (Input.GetKey(KeyCode.UpArrow)) {
+				posZ += demoSpeed;
+				shipDir = 0;
+			}
+
+			if (Input.GetKey(KeyCode.DownArrow)) {
+				posZ -= demoSpeed;
+				shipDir = 180;
+			}
 
 			//posX = -6; 
 			//posZ = -11;
@@ -49,7 +75,8 @@ public class NavToPosition : MonoBehaviour {
 		if (inRange){
 			player.transform.localScale = new Vector3(.5f,.5f,.5f);
 			player.transform.position = new Vector3(posX,0,posZ);
-			player.transform.rotation = Quaternion.Slerp(player.transform.rotation, Quaternion.Euler(playerRotation), Time.deltaTime * 1.0f);
+			playerRotation = new Vector3(0,shipDir,0);
+			player.transform.rotation = Quaternion.Slerp(player.transform.rotation, Quaternion.Euler(playerRotation), Time.deltaTime * 5);
 			OutText.SetActive(false);
 		} else {
 			outOfEvoke();
