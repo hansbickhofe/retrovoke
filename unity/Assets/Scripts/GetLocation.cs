@@ -21,7 +21,7 @@ public class GetLocation : MonoBehaviour
 			yield break;
 		
 		// Start service before querying location
-		Input.location.Start();
+		Input.location.Start(10f,0.5f);
 		
 		// Wait until service initializes
 		int maxWait = 20;
