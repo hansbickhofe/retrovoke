@@ -39,7 +39,7 @@ public class TouchObjects : MonoBehaviour {
 	}
 
 	void Click(string Target){
-		if (mainScript.curPage == "entername"){
+		if (mainScript.curPage == "entername" || mainScript.curPage == "reentername" || mainScript.curPage == "loginError"){
 			if (Target == "ButtonAction") mainScript.curPage = "checkname";
 			if (Target == "ButtonAbout") Application.LoadLevel("about");
 		}
@@ -49,11 +49,11 @@ public class TouchObjects : MonoBehaviour {
 		}
 
 		else if (mainScript.curPage == "selectteam"){
-			if (Target == "space") mainScript.myTeam = "Invaders";
-			if (Target == "pac") mainScript.myTeam = "Pac Men";
-			if (Target == "galaga") mainScript.myTeam = "Galagas";
+			if (Target == "space") mainScript.myTeam = "invaders";
+			if (Target == "pac") mainScript.myTeam = "pac_men";
+			if (Target == "galaga") mainScript.myTeam = "galagas";
 
-			if (Target == "ButtonAction") mainScript.curPage = "entercode";
+			if (Target == "ButtonAction") mainScript.curPage = "configcheck";
 		}
 
 		else if (mainScript.curPage == "entercode"){
