@@ -21,15 +21,20 @@ public class LoginMenu : MonoBehaviour {
 	public string myTeam = "Unselected";
 	
 	// hans codezeuchs
-	//private string url = "http://localhost:15080/config.requestcode";
-	private string url = "https://retrohunter-987.appspot.com/config.requestcode";
-	string playername;
-	string playercode;
+		private string coderequesturl = "https://retrohunter-987.appspot.com/config.requestcode";
+		private string namecheckurl = "https://retrohunter-987.appspot.com/config.checkname";
+		private string configurl = "https://retrohunter-987.appspot.com/config.configplayer";	
+//	public string coderequesturl = "http://localhost:15080/config.requestcode";
+//	public string namecheckurl = "http://localhost:15080/config.checkname";
+//	public string configurl = "http://localhost:15080/config.configplayer";
+	public string playername;
+	public string playercode;
 	int playerteam; // 0 = uselected, 1 = invaders, 2 = pac men, 3 = galagas, 
 
 	//debug stuff
-	bool nameExist;
-	bool loginError;
+	public bool nameExist;
+	public bool loginError;
+	public bool gotRequestanswer;
 	//debug stuff ende
 
 
@@ -39,10 +44,12 @@ public class LoginMenu : MonoBehaviour {
 		//debug stuff
 		nameExist = false;
 		loginError = false;
+		gotRequestanswer = false;
 		//debug stuff ende
 
 		curPage = "entername";
 		ShowPage();
+		PlayerPrefs.DeleteAll();
 		playername = PlayerPrefs.GetString("playername");
 	}
 
@@ -121,19 +128,22 @@ public class LoginMenu : MonoBehaviour {
 			// coroutine zum namenscheck aufrufen (name vorhanden oder frei)
 			// welcom cooroutine feststellt das der name frei ist 
 			// dann zweite coroutine starten und code anfordern
-
-//			WWWForm form = new WWWForm();
-//			form.AddField("name", playername);
-//			WWW www = new WWW(url, form);
-//			StartCoroutine(WaitForCode(www));
 			
-			if (nameExist == false){
-				playername = PlayerPrefs.GetString("playername");
-				WWWForm form = new WWWForm();
-				form.AddField("name", playername);
-				WWW www = new WWW(url, form);
-				StartCoroutine(WaitForCode(www));
-			} else {
+			NameCheckRequest(PlayerPrefs.GetString("playername"));
+			while (gotRequestanswer == false) 
+			{
+				Wait(1.5f);
+			}
+			
+		
+			if (nameExist == false) {
+				gotRequestanswer = false;
+				GetCodeRequest(PlayerPrefs.GetString("playername"));
+				curPage = "welcome";
+				ShowPage();
+			}
+			else if (nameExist == true) {
+				PlayerPrefs.SetString("playername","");
 				curPage = "reentername";
 				ShowPage();
 			}
@@ -229,14 +239,35 @@ public class LoginMenu : MonoBehaviour {
 
 	public void CheckName(string username){
 		PlayerPrefs.SetString("playername", username);
-		Debug.Log (PlayerPrefs.GetString("playername"));
+		Debug.Log ("Name entered: "+PlayerPrefs.GetString("playername"));
 	}
-
+	
+	
+	public void NameCheckRequest(string playername) {
+		Debug.Log ("NameCheckRequest called");
+		WWWForm nameform = new WWWForm();
+		nameform.AddField("name", playername);
+		WWW www1 = new WWW(namecheckurl, nameform);
+		StartCoroutine(WaitForNameCheck(www1));
+	}
+	
+	public void GetCodeRequest(string playername) {
+		Debug.Log ("GetCodeRequest called");
+		playername = PlayerPrefs.GetString("playername");
+		WWWForm form = new WWWForm();
+		form.AddField("name", playername);
+		WWW www = new WWW(namecheckurl, form);
+		StartCoroutine(WaitForCode(www));
+	}
+	
+	
 	IEnumerator Wait(float waitTime) {
+		Debug.Log ("Wait");
 		yield return new WaitForSeconds(waitTime);
-		curPage = "welcome";
-		ShowPage();
+//		curPage = "welcome";
+//		ShowPage();
 	}
+	
 
 	IEnumerator WaitForCode(WWW nextFreePlayerCode)
 	{
@@ -248,10 +279,37 @@ public class LoginMenu : MonoBehaviour {
 			PlayerPrefs.SetString("code",N["playercode"]);
 			playercode = PlayerPrefs.GetString("code");
 			Debug.Log ("Prefs: "+playercode);
-			curPage = "welcome";
-			ShowPage();
+//			curPage = "welcome";
+//			ShowPage();
 		} else {
 			Debug.Log("Error: "+ nextFreePlayerCode.error);
 		} 
 	}
+		IEnumerator WaitForNameCheck(WWW playerNameFree)
+		{
+			gotRequestanswer = true;
+			yield return playerNameFree;
+			
+			// check for errors
+			if (playerNameFree.error == null) {
+				var N = JSON.Parse(playerNameFree.text);
+				string response = N[0];
+				
+				if (response == "NAMENACK") {
+					nameExist = true;
+					PlayerPrefs.SetString("playername", "");
+					Debug.Log ("NameCheck false: "+response);
+					gotRequestanswer = true;
+				}
+				else if (response == "ACK"){
+					nameExist = false;
+					Debug.Log ("NameCheck true: "+response);
+					gotRequestanswer = true;
+				}
+			} 
+			else {
+				Debug.Log("Error: "+ playerNameFree.error);
+			}
+			
+		}
 }
