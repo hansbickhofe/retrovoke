@@ -135,18 +135,19 @@ public class LoginMenu : MonoBehaviour {
 				Wait(1.5f);
 			}
 			
-		
-			if (nameExist == false) {
+			while (gotRequestanswer == true) 
+				if (nameExist == false) {
+					
+					GetCodeRequest(PlayerPrefs.GetString("playername"));
+					curPage = "welcome";
+					ShowPage();
+				}
+				else if (nameExist == true) {
+					PlayerPrefs.SetString("playername","");
+					curPage = "reentername";
+					ShowPage();
+				}
 				gotRequestanswer = false;
-				GetCodeRequest(PlayerPrefs.GetString("playername"));
-				curPage = "welcome";
-				ShowPage();
-			}
-			else if (nameExist == true) {
-				PlayerPrefs.SetString("playername","");
-				curPage = "reentername";
-				ShowPage();
-			}
 		}
 
 		else if (curPage == "welcome"){
