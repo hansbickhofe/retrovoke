@@ -21,12 +21,12 @@ public class LoginMenu : MonoBehaviour {
 	public string myTeam = "Unselected";
 	
 	// hans codezeuchs
-		private string coderequesturl = "https://retrohunter-987.appspot.com/config.requestcode";
-		private string namecheckurl = "https://retrohunter-987.appspot.com/config.checkname";
-		private string configurl = "https://retrohunter-987.appspot.com/config.configplayer";	
-//	public string coderequesturl = "http://localhost:15080/config.requestcode";
-//	public string namecheckurl = "http://localhost:15080/config.checkname";
-//	public string configurl = "http://localhost:15080/config.configplayer";
+//		private string coderequesturl = "https://retrohunter-987.appspot.com/config.requestcode";
+//		private string namecheckurl = "https://retrohunter-987.appspot.com/config.checkname";
+//		private string configurl = "https://retrohunter-987.appspot.com/config.configplayer";	
+	public string coderequesturl = "http://localhost:15080/config.requestcode";
+	public string namecheckurl = "http://localhost:15080/config.checkname";
+	public string configurl = "http://localhost:15080/config.configplayer";
 	public string playername;
 	public string playercode;
 	int playerteam; // 0 = uselected, 1 = invaders, 2 = pac men, 3 = galagas, 
@@ -293,7 +293,7 @@ public class LoginMenu : MonoBehaviour {
 			// check for errors
 			if (playerNameFree.error == null) {
 				var N = JSON.Parse(playerNameFree.text);
-				string response = N[0];
+				string response = N["response"];
 				
 				if (response == "NAMENACK") {
 					nameExist = true;
