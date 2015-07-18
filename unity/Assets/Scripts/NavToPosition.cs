@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using SimpleJSON;
 using System.Collections;
 
 public class NavToPosition : MonoBehaviour {
@@ -11,6 +12,9 @@ public class NavToPosition : MonoBehaviour {
 	public float lon =  6.937723f;
 	public float multiX = 4500;
 	public float multiY = 7000;
+	public float time = 3;
+//	private string url = "https://focus-sweep-87123.appspot.com/";
+	private string url = "http://localhost:15080/pos";
 
 	float posX;
 	float posZ;
@@ -25,13 +29,23 @@ public class NavToPosition : MonoBehaviour {
 	public GameObject OutText;
 
 	public float demoSpeed;
+	public string playername;
+	public string playercode;
+	public int playerteam;
 
 	// Use this for initialization
 	void Start () {
 		myGPS = GetComponent<GetLocation>();
-
+		
 		posX = (6.937723f - lon)*multiX;
 		posZ = (50.944303f - lat)*multiY;
+		
+		playername = PlayerPrefs.GetString("playername");
+		playercode = PlayerPrefs.GetString("playercode");
+		playerteam = PlayerPrefs.GetInt("playerteam");
+		StartCoroutine(SendPos());
+		
+		
 	}
 	
 	// Update is called once per frame
@@ -78,6 +92,9 @@ public class NavToPosition : MonoBehaviour {
 			playerRotation = new Vector3(0,shipDir,0);
 			player.transform.rotation = Quaternion.Slerp(player.transform.rotation, Quaternion.Euler(playerRotation), Time.deltaTime * 5);
 			OutText.SetActive(false);
+			
+			
+			
 		} else {
 			outOfEvoke();
 		}
@@ -89,6 +106,40 @@ public class NavToPosition : MonoBehaviour {
 		DebugTextfield.GetComponent<Text>().text = inRange+" "+Input.compass.trueHeading+"\n"+posX+" "+posZ;
 	}
 
+		
+	private IEnumerator SendPos()
+	{
+		
+		while(true) 
+		{ 
+			
+			WWWForm form = new WWWForm();
+			form.AddField("name", playername);
+			form.AddField("code", playercode);
+			form.AddField("pos", posZ+","+posX);
+			form.AddField("heading", Input.compass.trueHeading.ToString("R"));
+			form.AddField("itemid", 0);
+			form.AddField("beaconinrange", 0);
+			WWW sendPosition = new WWW(url, form);
+			
+			yield return sendPosition;
+
+			if (sendPosition.error == null) {
+				var N = JSON.Parse(sendPosition.text);
+			} else {
+				Debug.Log("Error: "+ sendPosition.error);
+			}
+			Debug.Log ("OnCoroutine: "+(int)Time.time); 
+			yield return new WaitForSeconds(time);
+			}
+			
+			
+			
+	}
+	
+		
+	
+	
 	void outOfEvoke(){
 		OutText.SetActive(true);
 		player.transform.localScale = new Vector3(4,4,4);
