@@ -13,8 +13,8 @@ public class NavToPosition : MonoBehaviour {
 	public float multiX = 4500;
 	public float multiY = 7000;
 	public float time = 3;
-//	private string url = "https://focus-sweep-87123.appspot.com/";
-	private string url = "http://localhost:15080/pos";
+	private string url = "https://focus-sweep-87123.appspot.com/";
+	// private string url = "http://localhost:15080/pos";
 
 	float posX;
 	float posZ;
