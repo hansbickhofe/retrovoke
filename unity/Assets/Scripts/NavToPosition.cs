@@ -6,15 +6,17 @@ using System.Collections;
 public class NavToPosition : MonoBehaviour {
 
 	GetLocation myGPS;
+	GetGameData gameData;
+
 	public GameObject DebugTextfield;
 
 	public float lat = 50.944303f;
 	public float lon =  6.937723f;
 	public float multiX = 4500;
 	public float multiY = 7000;
-	public float time = 3;
-	// private string url = "https://retrohunter-987.appspot.com/pos";
-	private string url = "http://localhost:15080/pos";
+	public float time = 5;
+	private string url = "https://retrohunter-987.appspot.com/pos";
+	//private string url = "http://localhost:15080/pos";
 
 	float posX;
 	float posZ;
@@ -22,6 +24,9 @@ public class NavToPosition : MonoBehaviour {
 	float shipDir;
 
 	public GameObject player;
+	public GameObject Galaga;
+	public GameObject Invader;
+	public GameObject Pacman;
 	Vector3 playerRotation;
 
 	public int idleSpeed;
@@ -36,20 +41,73 @@ public class NavToPosition : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		myGPS = GetComponent<GetLocation>();
-		
+		gameData = GetComponent<GetGameData>();
+		//gameData.CreateNewGoodie();
+
 		posX = (6.937723f - lon)*multiX;
 		posZ = (50.944303f - lat)*multiY;
 		
 		playername = PlayerPrefs.GetString("playername");
 		playercode = PlayerPrefs.GetString("playercode");
 		playerteam = PlayerPrefs.GetInt("playerteam");
+	
+		//richtigen playercharcter anzeigen
+		Invader.SetActive(false);
+		Pacman.SetActive(false);
+		Galaga.SetActive(false);
+		
+		switch (playerteam) 
+		{
+		case 1:
+			Invader.SetActive(true);
+			Pacman.SetActive(false);
+			Galaga.SetActive(false);			
+			break;
+		case 2:
+			Pacman.SetActive(true);
+			Invader.SetActive(false);
+			Galaga.SetActive(false);				
+			break;
+		case 3:
+			Pacman.SetActive(false);
+			Invader.SetActive(false);		
+			Galaga.SetActive(true);
+			break;
+		default:
+			Debug.Log("Incorrect intelligence level.");
+			break;	
+		}				
+
 		StartCoroutine(SendPos());
-		
-		
 	}
 	
 	// Update is called once per frame
 	void Update () {
+
+		//mouse click
+		if (Input.GetMouseButtonDown(0)){
+			Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
+			RaycastHit hitClick;
+			
+			if (Physics.Raycast(ray, out hitClick)){
+				Debug.Log ("Touched: "+hitClick.collider.name);
+				Click (hitClick.collider.name);
+			}
+		}
+		
+		// touch input
+		if (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began)
+		{
+			RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint((Input.GetTouch (0).position)), Vector2.zero);
+			
+			if (hit.collider != null)
+			{
+				Debug.Log ("Touched: "+hit.collider.name);
+				Click (hit.collider.name);
+			}
+		}
+
+
 		if (myGPS.gpsReady){
 			posX = (Input.location.lastData.longitude - lon)*multiX;
 			posZ = (Input.location.lastData.latitude - lat)*multiY;
@@ -81,9 +139,17 @@ public class NavToPosition : MonoBehaviour {
 			//posX = -6; 
 			//posZ = -11;
 
+
+			//garten
 			// mitte: 50.944303 - 6.937723
 			// oben rechts: 50.945627 - 6.938738
 			// unten rechts: 50.943015 - 6.938892
+
+			//evoke kalk
+			// mitte 50.935299, 7.008536
+			// oben rechts: 50.936348, 7.009322
+			// unten rechts: 50.934362, 7.009319
+
 		}
 
 		if (inRange){
@@ -112,7 +178,6 @@ public class NavToPosition : MonoBehaviour {
 		
 		while(true) 
 		{ 
-			
 			WWWForm form = new WWWForm();
 			form.AddField("name", playername);
 			form.AddField("code", playercode);
@@ -142,5 +207,9 @@ public class NavToPosition : MonoBehaviour {
 		player.transform.localScale = new Vector3(4,4,4);
 		player.transform.position = new Vector3(0,5,0);
 		player.transform.Rotate(new Vector3(Time.deltaTime * idleSpeed,Time.deltaTime * idleSpeed,0));
+	}
+
+	void Click(string Target){
+		if (Target == "PlayerObj") Application.LoadLevel("player");
 	}
 }

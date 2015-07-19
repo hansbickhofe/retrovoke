@@ -10,16 +10,25 @@ public class Score : MonoBehaviour {
 	
 	// Use this for initialization
 	void Start () {
+
+		TextMesh teamscoreSpace = GameObject.Find("ScoreSpace").GetComponent<TextMesh>();
+		teamscoreSpace.text = "111";
+		TextMesh teamscorePac = GameObject.Find("ScorePac").GetComponent<TextMesh>();
+		teamscorePac.text = "222";
+		TextMesh teamscoreGalaga = GameObject.Find("ScoreGalaga").GetComponent<TextMesh>();
+		teamscoreGalaga.text = "333";
+
+
 		TextMesh textObject0 = GameObject.Find("name_0").GetComponent<TextMesh>();
-		textObject0.text = "1.abc [gal] 12345";
+		textObject0.text = "1.abc [gal] 1234";
 		TextMesh textObject1 = GameObject.Find("name_1").GetComponent<TextMesh>();
-		textObject1.text = "2.def [gal] 12345";
+		textObject1.text = "2.def [gal] 1234";
 		TextMesh textObject2 = GameObject.Find("name_2").GetComponent<TextMesh>();
-		textObject2.text = "3.ghi [inv] 12345";
+		textObject2.text = "3.ghi [inv] 1234";
 		TextMesh textObject3 = GameObject.Find("name_3").GetComponent<TextMesh>();
-		textObject3.text = "4.ghi [pac] 12345";
+		textObject3.text = "4.ghi [pac] 1234";
 		TextMesh textObject4 = GameObject.Find("name_4").GetComponent<TextMesh>();
-		textObject4.text = "5.ghi [gal] 12345";
+		textObject4.text = "5.ghi [gal] 1234";
 	}
 	
 	void Update () {
@@ -49,6 +58,6 @@ public class Score : MonoBehaviour {
 	}
 	
 	void Click(string Target){
-		if (Target == "ButtonBack") Application.LoadLevel("login");
+		if (Target == "ButtonBack") Application.LoadLevel("player");
 	}
 }

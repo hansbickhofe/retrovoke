@@ -40,7 +40,8 @@ public class About : MonoBehaviour {
 	}
 
 	void Click(string Target){
-		if (Target == "ButtonBack") Application.LoadLevel("login");
+		if (Target == "ButtonBack" && PlayerPrefs.GetString("LoginComplete") == "ACK") Application.LoadLevel("game");
+		else Application.LoadLevel("login");
 
 		if (Target == "space") Application.LoadLevel("player");
 		if (Target == "pac") Application.LoadLevel("score");

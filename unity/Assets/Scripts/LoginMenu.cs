@@ -24,31 +24,27 @@ public class LoginMenu : MonoBehaviour {
 		private string coderequesturl = "https://retrohunter-987.appspot.com/config.requestcode";
 		private string namecheckurl = "https://retrohunter-987.appspot.com/config.checkname";
 		private string configurl = "https://retrohunter-987.appspot.com/config.configplayer";	
-//	public string coderequesturl = "http://localhost:15080/config.requestcode";
-//	public string namecheckurl = "http://localhost:15080/config.checkname";
-//	public string configurl = "http://localhost:15080/config.configplayer";
+	//	public string coderequesturl = "http://localhost:15080/config.requestcode";
+	//	public string namecheckurl = "http://localhost:15080/config.checkname";
+	//	public string configurl = "http://localhost:15080/config.configplayer";
 	public string playername;
 	public string playercode;
 	int playerteam; // 0 = uselected, 1 = invaders, 2 = pac men, 3 = galagas, 
 	int checkNumber ;
 
-	//debug stuff
 	public bool nameExist;
 	public bool loginError;
-	//debug stuff ende
 
 
 	// Use this for initialization
 	void Start () {
 
-		//debug stuff
 		nameExist = false;
 		loginError = false;
-		//debug stuff ende
 
 		curPage = "entername";
 		ShowPage();
-		PlayerPrefs.DeleteAll();
+		//PlayerPrefs.DeleteAll();
 		playername = PlayerPrefs.GetString("playername");
 	}
 
@@ -230,12 +226,10 @@ public class LoginMenu : MonoBehaviour {
 	
 	
 	public void NameCheckRequest(string playername, int checkNumber) {
-		
 		WWWForm nameform = new WWWForm();
 		nameform.AddField("name", playername);
 		WWW www1 = new WWW(namecheckurl, nameform);
 		StartCoroutine(WaitForNameCheck(www1,checkNumber,playername));
-		
 	}
 	
 	public void ConfigRequest() {
@@ -250,12 +244,6 @@ public class LoginMenu : MonoBehaviour {
 		WWW wwwconfig = new WWW(configurl, configform);
 		StartCoroutine(WaitForConfigCheck(wwwconfig));
 		
-	}
-	
-	
-	IEnumerator Wait(float waitTime) {
-//		Debug.Log ("Wait");
-		yield return new WaitForSeconds(waitTime);
 	}
 
 	IEnumerator WaitForConfigCheck(WWW playerConfig)
@@ -276,6 +264,7 @@ public class LoginMenu : MonoBehaviour {
 			else if (response == "ACK"){
 				nameExist = false;
 //				Debug.Log ("Configcheck true: "+ response);
+				PlayerPrefs.SetString("LoginComplete","ACK");
 				Application.LoadLevel("game");
 			}
 		} 
@@ -344,6 +333,6 @@ public class LoginMenu : MonoBehaviour {
 //			Debug.Log("Error: "+ nextFreePlayerCode.error);
 			curPage = "loginError";
 			ShowPage();			
-		} 
+		}
 	}	
 }

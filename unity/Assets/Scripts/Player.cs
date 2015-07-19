@@ -7,7 +7,7 @@ public class Player : MonoBehaviour {
 	public GameObject Invader;
 	public GameObject Pacman;
 	public GameObject Galaga;
-	public GameObject BtnPlay;
+	public GameObject BtnScore;
 	public GameObject BtnBack;
 	public string playername;
 	public int playerteam; // 0 = uselected, 1 = invaders, 2 = pac men, 3 = galagas
@@ -22,9 +22,11 @@ public class Player : MonoBehaviour {
 		StartCoroutine(GetScore());
 		TextMesh textObject0 = GameObject.Find("Payerscore").GetComponent<TextMesh>();
 		textObject0.text = playertotalscore;
+
 		Invader.SetActive(false);
 		Pacman.SetActive(false);
 		Galaga.SetActive(false);
+
 		switch (playerteam) 
 		{
 		case 1:
@@ -101,7 +103,8 @@ public class Player : MonoBehaviour {
 
 	
 	void Click(string Target){
-		if (Target == "ButtonPlay") Application.LoadLevel("game");
+		if (Target == "Teams") Application.LoadLevel("game");
+		if (Target == "ButtonScore") Application.LoadLevel("score");
 		if (Target == "ButtonAbout") Application.LoadLevel("about");
 	}
 }
