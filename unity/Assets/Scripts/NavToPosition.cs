@@ -13,8 +13,8 @@ public class NavToPosition : MonoBehaviour {
 	public float multiX = 4500;
 	public float multiY = 7000;
 	public float time = 3;
-	private string url = "https://retrohunter-987.appspot.com/pos";
-	// private string url = "http://localhost:15080/pos";
+	// private string url = "https://retrohunter-987.appspot.com/pos";
+	private string url = "http://localhost:15080/pos";
 
 	float posX;
 	float posZ;
@@ -127,9 +127,9 @@ public class NavToPosition : MonoBehaviour {
 			if (sendPosition.error == null) {
 				var N = JSON.Parse(sendPosition.text);
 			} else {
-				Debug.Log("Error: "+ sendPosition.error);
+//				Debug.Log("Error: "+ sendPosition.error);
 			}
-			Debug.Log ("OnCoroutine: "+(int)Time.time); 
+//			Debug.Log ("OnCoroutine: "+(int)Time.time); 
 			yield return new WaitForSeconds(time);
 			}	
 	}

@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using SimpleJSON;
 using System.Collections;
 
 public class Player : MonoBehaviour {
@@ -8,14 +9,52 @@ public class Player : MonoBehaviour {
 	public GameObject Galaga;
 	public GameObject BtnPlay;
 	public GameObject BtnBack;
+	public string playername;
+	public int playerteam; // 0 = uselected, 1 = invaders, 2 = pac men, 3 = galagas
+	public string playertotalscore;
+ 	private string url = "https://retrohunter-987.appspot.com/score";
+//    private string url = "http://localhost:15080/score";
 	
 	// Use this for initialization
 	void Start () {
+		playername = PlayerPrefs.GetString("playername");
+		playerteam = PlayerPrefs.GetInt("playerteam");
+		StartCoroutine(GetScore());
 		TextMesh textObject0 = GameObject.Find("Payerscore").GetComponent<TextMesh>();
-		textObject0.text = "12345";
+		textObject0.text = playertotalscore;
+		Invader.SetActive(false);
+		Pacman.SetActive(false);
+		Galaga.SetActive(false);
+		switch (playerteam) 
+		{
+		case 1:
+			Invader.SetActive(true);
+			Pacman.SetActive(false);
+			Galaga.SetActive(false);			
+			break;
+		case 2:
+			Pacman.SetActive(true);
+			Invader.SetActive(false);
+			Galaga.SetActive(false);				
+			break;
+		case 3:
+			Pacman.SetActive(false);
+			Invader.SetActive(false);		
+			Galaga.SetActive(true);
+			break;
+		default:
+			Debug.Log("Incorrect intelligence level.");
+			break;	
+		}				
 	}
 	
 	void Update () {
+	
+		TextMesh textObject0 = GameObject.Find("Payerscore").GetComponent<TextMesh>();
+		textObject0.text = playertotalscore;
+		TextMesh textObject1 = GameObject.Find("Payername").GetComponent<TextMesh>();
+		textObject1.text = playername;
+		
 		
 		//mouse
 		if (Input.GetMouseButtonDown(0)){
@@ -40,6 +79,26 @@ public class Player : MonoBehaviour {
 			}
 		}
 	}
+	
+	private IEnumerator GetScore()
+	{
+			
+		WWWForm form = new WWWForm();
+		form.AddField("name", playername);
+
+		WWW sendScoreRequest = new WWW(url, form);
+		
+		yield return sendScoreRequest;
+		
+		if (sendScoreRequest.error == null) {
+			var N = JSON.Parse(sendScoreRequest.text);
+			playertotalscore = N["TotalScore"];
+			Debug.Log(N);
+		} else {
+			Debug.Log("Error: "+ sendScoreRequest.error);
+		}
+	}	
+
 	
 	void Click(string Target){
 		if (Target == "ButtonPlay") Application.LoadLevel("game");
