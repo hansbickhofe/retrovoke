@@ -104,10 +104,14 @@ public class Score : MonoBehaviour {
 			{
 				TeamShort = "[gal]";
 			}
+			if (TeamNum == 0) // 0 = uselected, 1 = invaders, 2 = pac men, 3 = galagas
+			{
+				TeamShort = "[---]";
+			}			
 			
 			//textObject0.text = (top5+1).ToString()+". " + N[top5]["playername"] + " " + TeamShort + " " + N[top5]["playerdata"][0];
 			topFiveTextFields[top5].GetComponent<TextMesh>().text = (top5+1).ToString()+". " + N[top5]["playername"] + " " + TeamShort + " " + N[top5]["playerdata"][0];
-			print (top5);
+	
 			top5++ ;
 		}
 
