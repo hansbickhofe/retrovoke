@@ -13,13 +13,14 @@ public class Score : MonoBehaviour {
 	public string ScoreSpace;
 	public string ScorePac;
 	public string ScoreGalaga;
+
+	public GameObject[] topFiveTextFields;
 	
 	private string url = "https://retrohunter-987.appspot.com/scoresall";
 	// private string url = "http://localhost:15080/scoresall";
 	// Use this for initialization
 	void Start () {
 		StartCoroutine(GetScore());
-
 	}
 	
 	void Update () {
@@ -84,10 +85,10 @@ public class Score : MonoBehaviour {
 		teamscoreGalaga.text = ScoreGalaga;
 		
 				
-		while (top5 <= 5)
+		while (top5 < 5)
 		{
 			// pedda schau mal hier drüber!
-			TextMesh textObject0 = GameObject.Find("name_"+top5.ToString()).GetComponent<TextMesh>();	
+			//TextMesh textObject0 = GameObject.Find("name_"+top5.ToString()).GetComponent<TextMesh>();
 			
 			int TeamNum = N[top5]["playerdata"][1].AsInt;
 			
@@ -104,7 +105,9 @@ public class Score : MonoBehaviour {
 				TeamShort = "[gal]";
 			}
 			
-			textObject0.text = (top5+1).ToString()+". " + N[top5]["playername"] + " " + TeamShort + " " + N[top5]["playerdata"][0];
+			//textObject0.text = (top5+1).ToString()+". " + N[top5]["playername"] + " " + TeamShort + " " + N[top5]["playerdata"][0];
+			topFiveTextFields[top5].GetComponent<TextMesh>().text = (top5+1).ToString()+". " + N[top5]["playername"] + " " + TeamShort + " " + N[top5]["playerdata"][0];
+			print (top5);
 			top5++ ;
 		}
 
