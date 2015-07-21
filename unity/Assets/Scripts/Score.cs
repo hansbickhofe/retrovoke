@@ -14,8 +14,8 @@ public class Score : MonoBehaviour {
 	public string ScorePac;
 	public string ScoreGalaga;
 	
-	//private string url = "https://retrohunter-987.appspot.com/scoresall";
-	private string url = "http://localhost:15080/scoresall";
+	private string url = "https://retrohunter-987.appspot.com/scoresall";
+	// private string url = "http://localhost:15080/scoresall";
 	// Use this for initialization
 	void Start () {
 		StartCoroutine(GetScore());
