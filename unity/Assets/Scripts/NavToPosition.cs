@@ -159,8 +159,6 @@ public class NavToPosition : MonoBehaviour {
 			player.transform.rotation = Quaternion.Slerp(player.transform.rotation, Quaternion.Euler(playerRotation), Time.deltaTime * 5);
 			OutText.SetActive(false);
 			
-			
-			
 		} else {
 			outOfEvoke();
 		}
@@ -175,7 +173,6 @@ public class NavToPosition : MonoBehaviour {
 		
 	private IEnumerator SendPos()
 	{
-		
 		while(true) 
 		{ 
 			WWWForm form = new WWWForm();
@@ -198,9 +195,6 @@ public class NavToPosition : MonoBehaviour {
 			yield return new WaitForSeconds(time);
 			}	
 	}
-	
-		
-	
 	
 	void outOfEvoke(){
 		OutText.SetActive(true);
