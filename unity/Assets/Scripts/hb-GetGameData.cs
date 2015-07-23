@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+﻿/* using UnityEngine;
 using SimpleJSON;
 using System;
 using System.Collections;
@@ -58,3 +58,4 @@ public class GetGameData : MonoBehaviour {
 		}
 	}
 }
+ */
