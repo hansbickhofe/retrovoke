@@ -6,7 +6,6 @@ using System.Collections;
 
 public class GetGameData : MonoBehaviour {
 
-
 	public GameObject[] allGoodies;
 	//public string[] goodieStat;
 	//int goodieID;
@@ -75,5 +74,9 @@ public class GetGameData : MonoBehaviour {
 			//print("i: "+i);
 			GameObject.Destroy(transform.GetChild(i).gameObject);
 		}
+	}
+
+	public void PlayerHitObject(string target){
+		print ("Collision Object: "+target);
 	}
 }

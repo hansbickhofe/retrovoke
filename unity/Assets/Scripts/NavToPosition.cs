@@ -169,10 +169,6 @@ public class NavToPosition : MonoBehaviour {
 
 		DebugTextfield.GetComponent<Text>().text = inRange+" "+Input.compass.trueHeading+"\n"+posX+" "+posZ;
 	}
-
-	void OnTriggerEnter(Collider other) {
-		Destroy(other.gameObject);
-	}
 	
 	private IEnumerator SendPos()
 	{
