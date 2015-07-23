@@ -1,55 +1,79 @@
 ﻿using UnityEngine;
+using SimpleJSON;
+using System;
 using System.Collections;
+
 
 public class GetGameData : MonoBehaviour {
 
 
 	public GameObject[] allGoodies;
-	public string[] goodieStat;
-	int goodieID;
+	//public string[] goodieStat;
+	//int goodieID;
+
+	private string url = "https://retrohunter-987.appspot.com/pos.getitems";
+	public float time = 5;
 
 
 	// Use this for initialization
 	void Start () {
-		updateGoodies();
+		StartCoroutine(GetGameObjects());
+		//updateGoodies();
 	}
 
-	void updateGoodies(){
-		for (int i=0; i<goodieStat.Length; i++){
-			if (goodieStat[i] == "available"){
-				GameObject newGoodie = Instantiate(allGoodies[selectGoodieType()], transform.position, Quaternion.identity) as GameObject;
-				newGoodie.transform.parent = transform;
-				newGoodie.transform.localEulerAngles = new Vector3(90,0,0);
+// es kommen x datensätz
+// pro ds goodietype 0-9
+// position im game
+// [{"takenby":"HB1","pos":"50.9352136678,7.00834023551","itemid":5418393301680128,"playerid":4855443348258816,"faction":2},
 
-				//spawnzone auswählen
-				if (Random.value < 0.5f) {
-					// zone 0
-					newGoodie.transform.position = new Vector3(Random.Range(-2.5f,0.5f),.1f,Random.Range(0,5.5f));
-				} else {
-					// zone 1
-					newGoodie.transform.position = new Vector3(Random.Range(2.5f,4.5f),.1f,Random.Range(6.5f,-7.5f));
-				}
-
-				//set goodie params
-				goodieStat[i] = "active";
-				print(Random.value);
+	private IEnumerator GetGameObjects()
+	{	
+		while(true) 
+		{ 
+			WWWForm form = new WWWForm();
+			form.AddField("name", "Allplayers");
+			WWW requestGameObjects = new WWW(url, form);
+			
+			yield return requestGameObjects;
+			
+			if (requestGameObjects.error == null) {
+				CreateNewGoodie(requestGameObjects.text);
+			} else {
+				Debug.Log("Error: "+ requestGameObjects.error);
 			}
+			//	Debug.Log ("OnCoroutine: "+(int)Time.time); 
+			yield return new WaitForSeconds(time);
+		}	
+	}
+
+	public void CreateNewGoodie(string JSONOutput){
+		ResetGoodies(); 
+		var N = JSON.Parse(JSONOutput);
+		var GoodieCounter = 0 ;
+
+		while (GoodieCounter < N.Count) 
+		{
+			//Debug.Log("ObjectsJSON: "+GoodieCounter.ToString() + ": "  + N[GoodieCounter]["itemid"]+ " " + N[GoodieCounter]["pos"]);
+			string[] PosArray=N[GoodieCounter]["pos"].ToString().Replace("\"", "").Split(',') ;
+			string GoodieID = N[GoodieCounter]["itemid"].ToString().Replace("\"", "");
+			float z = float.Parse(PosArray[0].Trim());
+			float x = float.Parse(PosArray[1].Trim());
+
+			// bitte goodie auf y 0 positionieren, sonst hab ich keine collision
+			GameObject newGoodie = Instantiate(allGoodies[5], new Vector3(x,0,z ), Quaternion.identity) as GameObject;
+			newGoodie.GetComponent<GoodieParams>().id = "";
+			newGoodie.GetComponent<GoodieParams>().takenBy = "";
+			newGoodie.transform.parent = transform;
+			newGoodie.transform.localEulerAngles = new Vector3(90,0,0);
+
+			GoodieCounter++;
 		}
 	}
 
-	int selectGoodieType(){
-		int rnd = Random.Range(0,100);
-
-		if (rnd == 100) goodieID = 9;
-		else if (rnd >= 98 && rnd < 100) goodieID = 8;
-		else if (rnd >= 95 && rnd < 98)  goodieID = 7;
-		else if (rnd >= 90 && rnd < 95)  goodieID = 6;
-		else if (rnd >= 80 && rnd < 90)  goodieID = 5;
-		else if (rnd >= 70 && rnd < 80)  goodieID = 4;
-		else if (rnd >= 50 && rnd < 60)  goodieID = 3;
-		else if (rnd >= 40 && rnd < 50)  goodieID = 2;
-		else if (rnd >= 20 && rnd < 40)  goodieID = 1;
-		else if (rnd >= 0 && rnd < 20)  goodieID = 0;
-		return goodieID;
+	void ResetGoodies(){
+		for (int i = 0; i < transform.childCount; i++) {
+			//print("i: "+i);
+			GameObject.Destroy(transform.GetChild(i).gameObject);
+		}
 	}
 }
