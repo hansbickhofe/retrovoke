@@ -55,13 +55,15 @@ public class GetGameData : MonoBehaviour {
 			//Debug.Log("ObjectsJSON: "+GoodieCounter.ToString() + ": "  + N[GoodieCounter]["itemid"]+ " " + N[GoodieCounter]["pos"]);
 			string[] PosArray=N[GoodieCounter]["pos"].ToString().Replace("\"", "").Split(',') ;
 			string GoodieID = N[GoodieCounter]["itemid"].ToString().Replace("\"", "");
+			string TakenBy = N[GoodieCounter]["takenby"].ToString().Replace("\"", "");
+
 			float z = float.Parse(PosArray[0].Trim());
 			float x = float.Parse(PosArray[1].Trim());
 
 			// bitte goodie auf y 0 positionieren, sonst hab ich keine collision
 			GameObject newGoodie = Instantiate(allGoodies[5], new Vector3(x,0,z ), Quaternion.identity) as GameObject;
-			newGoodie.GetComponent<GoodieParams>().id = "id: "+GoodieCounter; // <- nur damit irgendwas hier drin steht
-			newGoodie.GetComponent<GoodieParams>().takenBy = "owner: "+GoodieCounter; // <- nur damit irgendwas hier drin steht
+			newGoodie.GetComponent<GoodieParams>().id = GoodieID;
+			newGoodie.GetComponent<GoodieParams>().takenBy = TakenBy;
 			newGoodie.transform.parent = transform;
 			newGoodie.transform.localEulerAngles = new Vector3(90,0,0);
 
