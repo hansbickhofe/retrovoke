@@ -60,8 +60,8 @@ public class GetGameData : MonoBehaviour {
 
 			// bitte goodie auf y 0 positionieren, sonst hab ich keine collision
 			GameObject newGoodie = Instantiate(allGoodies[5], new Vector3(x,0,z ), Quaternion.identity) as GameObject;
-			newGoodie.GetComponent<GoodieParams>().id = "";
-			newGoodie.GetComponent<GoodieParams>().takenBy = "";
+			newGoodie.GetComponent<GoodieParams>().id = "id: "+GoodieCounter; // <- nur damit irgendwas hier drin steht
+			newGoodie.GetComponent<GoodieParams>().takenBy = "owner: "+GoodieCounter; // <- nur damit irgendwas hier drin steht
 			newGoodie.transform.parent = transform;
 			newGoodie.transform.localEulerAngles = new Vector3(90,0,0);
 
@@ -76,7 +76,7 @@ public class GetGameData : MonoBehaviour {
 		}
 	}
 
-	public void PlayerHitObject(string target){
-		print ("Collision Object: "+target);
+	public void PlayerHitObject(string id){
+		print ("Coll Obj ID: "+id);
 	}
 }

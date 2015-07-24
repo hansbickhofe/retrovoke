@@ -3,11 +3,10 @@ using System.Collections;
 
 public class PlayerCollision : MonoBehaviour {
 
-	GetGameData GameDataScript;
+	public GetGameData GameDataScript;
 
 	// Use this for initialization
 	void Start () {
-		GameDataScript = GetComponent<GetGameData>();
 	}
 	
 	// Update is called once per frame
@@ -16,7 +15,10 @@ public class PlayerCollision : MonoBehaviour {
 	}
 
 	void OnTriggerEnter(Collider other) {
-		//GameDataScript.PlayerHitObject (other.gameObject.name);
-		print(hit);
+		if (other.gameObject.tag == "Goodie"){
+			//other.gameObject.GetComponent<GoodieParams>().id;
+			GameDataScript.PlayerHitObject(other.gameObject.GetComponent<GoodieParams>().id);
+		}
+		//print(hit);
 	}
 }
