@@ -69,10 +69,12 @@ public class PlayerCollision : MonoBehaviour {
 	void OnTriggerEnter(Collider other) {
 		if (other.gameObject.tag == "Goodie") 
 			playerhasitemid = other.gameObject.GetComponent<GoodieParams>().takenBy;
+			Debug.Log("Player has Item: " + other.gameObject.GetComponent<PlayerParams>().hasitemid);
 		 {
 		 	if (other.gameObject.GetComponent<GoodieParams>().takenBy == "None")
 			 {
-				if (other.gameObject.GetComponent<PlayerParams>().hasitemid == "")
+				
+				if (gameObject.GetComponent<PlayerParams>().hasitemid == "")
 			 	{
 					//other.gameObject.GetComponent<GoodieParams>().id;
 					ItemId = other.gameObject.GetComponent<GoodieParams>().id;
@@ -107,10 +109,12 @@ public class PlayerCollision : MonoBehaviour {
 			
 			yield return pickupResponse;
 			
-		              if (pickupResponse.error == null) {
-			var N = JSON.Parse(pickupResponse.text);
-			} else {
-				//				Debug.Log("Error: "+ sendPosition.error);
+	        if (pickupResponse.error == null) {
+				var N = JSON.Parse(pickupResponse.text);
+			} 
+			else 
+			{	
+				Debug.Log("Error: "+ pickupResponse.error);
 			}
 			
 	}	
