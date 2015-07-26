@@ -9,13 +9,16 @@ public class GetGameData : MonoBehaviour {
 	public GameObject[] allGoodies;
 	//public string[] goodieStat;
 	//int goodieID;
+	public string PlayerName ;
 
 	private string url = "https://retrohunter-987.appspot.com/pos.getitems";
+	// private string url = "http://localhost:15080/pos.getitems";
 	public float time = 5;
 
 
 	// Use this for initialization
 	void Start () {
+		PlayerName = PlayerPrefs.GetString("playername");
 		StartCoroutine(GetGameObjects());
 		//updateGoodies();
 	}
@@ -30,7 +33,7 @@ public class GetGameData : MonoBehaviour {
 		while(true) 
 		{ 
 			WWWForm form = new WWWForm();
-			form.AddField("name", "Allplayers");
+			form.AddField("name", PlayerName);
 			WWW requestGameObjects = new WWW(url, form);
 			
 			yield return requestGameObjects;

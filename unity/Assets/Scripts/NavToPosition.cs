@@ -176,8 +176,8 @@ public class NavToPosition : MonoBehaviour {
 		{ 
 			WWWForm form = new WWWForm();
 			form.AddField("name", playername);
-			form.AddField("code", playercode);
-			form.AddField("pos", posZ+","+posX);
+			form.AddField("usercode", playercode);
+			form.AddField("geopos", posZ+","+posX);
 			form.AddField("heading", Input.compass.trueHeading.ToString("R"));
 			form.AddField("itemid", 0);
 			form.AddField("beaconinrange", 0);
