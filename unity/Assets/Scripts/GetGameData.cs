@@ -65,9 +65,14 @@ public class GetGameData : MonoBehaviour {
 			float x = float.Parse(PosArray[1].Trim());
 
 			// bitte goodie auf y 0 positionieren, sonst hab ich keine collision
-			GameObject newGoodie = Instantiate(allGoodies[5], new Vector3(x,0,z ), Quaternion.identity) as GameObject;
+			GameObject newGoodie = Instantiate(allGoodies[5], new Vector3(x,0,z), Quaternion.identity) as GameObject;
 			newGoodie.GetComponent<GoodieParams>().id = GoodieID;
 			newGoodie.GetComponent<GoodieParams>().takenBy = TakenBy;
+
+			//goodie neu positionieren
+			if (TakenBy == PlayerName) newGoodie.GetComponent<GoodieParams>().posFromPlayer = true;
+
+			//in den unterordner schieben
 			newGoodie.transform.parent = transform;
 			newGoodie.transform.localEulerAngles = new Vector3(90,0,0);
 

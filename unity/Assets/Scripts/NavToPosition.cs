@@ -18,8 +18,8 @@ public class NavToPosition : MonoBehaviour {
 	private string url = "https://retrohunter-987.appspot.com/pos";
 	//private string url = "http://localhost:15080/pos";
 
-	float posX;
-	float posZ;
+	public float posX;
+	public float posZ;
 
 	float shipDir;
 
