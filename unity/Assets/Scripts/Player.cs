@@ -88,9 +88,14 @@ public class Player : MonoBehaviour {
 				ItemType = 0;
 				MessageText.text = "PICKUP FAILED\n#ITEM OWNED BY\nOTHER PLAYER#";
 			}
+			else {
+				hasItem = true;
+				ItemId = itemID;
+			}
 
 		} else {	
 			Debug.Log("Error: "+ pickupResponse.error);
+			hasItem = false;
 		}
 	}
 
