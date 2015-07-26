@@ -55,7 +55,7 @@ public class GetGameData : MonoBehaviour {
 
 		while (GoodieCounter < N.Count) 
 		{
-			//Debug.Log("ObjectsJSON: "+GoodieCounter.ToString() + ": "  + N[GoodieCounter]["itemid"]+ " " + N[GoodieCounter]["pos"]);
+//			Debug.Log("ObjectsJSON: "+JSONOutput);
 			string[] PosArray=N[GoodieCounter]["pos"].ToString().Replace("\"", "").Split(',') ;
 			string GoodieID = N[GoodieCounter]["itemid"].ToString().Replace("\"", "");
 			string TakenBy = N[GoodieCounter]["takenby"].ToString().Replace("\"", "");

@@ -7,6 +7,7 @@ using UnityEngine.UI;
 public class Player : MonoBehaviour {
 	
 	public GetGameData GameDataScript;
+	public GoodieParams GoodieDataScript;
 
 
 	//texte
@@ -51,7 +52,7 @@ public class Player : MonoBehaviour {
 			StartCoroutine(PickupItem());
 		}
 
-		if (other.gameObject.tag == "Goodie" && other.gameObject.GetComponent<GoodieParams>().takenBy != "None") {
+		if (other.gameObject.tag == "Goodie" && other.gameObject.GetComponent<GoodieParams>().takenBy != "None" && other.gameObject.GetComponent<GoodieParams>().takenBy != playername) {
 			Debug.Log("Allready taken by:" + other.gameObject.GetComponent<GoodieParams>().takenBy);
 		}
 
@@ -110,10 +111,13 @@ public class Player : MonoBehaviour {
 			string Status = N[0]["status"].ToString().Replace("\"", "");
 			string itemID = N[0]["item"].ToString().Replace("\"", "");
 
-			//fehler bei store
+			//kein fehler bei store
 			if (Status == "item stored") {
 				hasItem = false;
+				ItemId = "" ;
 				MessageText.text = "ITEM SUCCESSFULLY \n#DROPPED#";
+				
+				
 			}
 			
 		} else {	
