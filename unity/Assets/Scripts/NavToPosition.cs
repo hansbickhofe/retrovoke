@@ -34,7 +34,6 @@ public class NavToPosition : MonoBehaviour {
 
 	//texte
 	public GameObject OutText;
-	public GameObject MessageText;
 
 	public float demoSpeed;
 	public string playername;
