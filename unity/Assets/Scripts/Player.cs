@@ -12,7 +12,8 @@ public class Player : MonoBehaviour {
 	//texte
 	public Text MessageText;
 
-	private string url = "https://retrohunter-987.appspot.com/pickup";
+	private string pickUpUrl = "https://retrohunter-987.appspot.com/pickup";
+	private string storeUrl = "https://retrohunter-987.appspot.com/store";
 	//private string url = "http://localhost:15080/pickup";	
 	public string playername;
 	public string playercode;
@@ -40,6 +41,7 @@ public class Player : MonoBehaviour {
 	}
 
 	void OnTriggerEnter(Collider other) {
+		// pickup item
 		if (other.gameObject.tag == "Goodie" && !hasItem && other.gameObject.GetComponent<GoodieParams>().takenBy == "None") {
 			hasItem = true;
 			ItemId = other.gameObject.GetComponent<GoodieParams>().id;
@@ -52,6 +54,13 @@ public class Player : MonoBehaviour {
 		if (other.gameObject.tag == "Goodie" && other.gameObject.GetComponent<GoodieParams>().takenBy != "None") {
 			Debug.Log("Allready taken by:" + other.gameObject.GetComponent<GoodieParams>().takenBy);
 		}
+
+
+		//drop item
+		if (other.gameObject.tag == "Pit" && hasItem) {
+			print("pit");
+			StartCoroutine(StoreItem());
+		}
 	}
 	
 	private IEnumerator PickupItem() {
@@ -62,7 +71,7 @@ public class Player : MonoBehaviour {
 		form.AddField("heading", Input.compass.trueHeading.ToString("R"));
 		form.AddField("itemid", ItemId);
         form.AddField("itemtype", ItemType);
-        WWW pickupResponse = new WWW(url, form);
+		WWW pickupResponse = new WWW(pickUpUrl, form);
 		
 		yield return pickupResponse;
 		
@@ -74,11 +83,41 @@ public class Player : MonoBehaviour {
 			//fehler bei pick up
 			if (Status != "item picked") {
 				hasItem = false;
+				ItemId = "";
+				ItemType = 0;
 				MessageText.text = "PICKUP FAILED\n#ITEM OWNED BY\nOTHER PLAYER#";
 			}
 
 		} else {	
 			Debug.Log("Error: "+ pickupResponse.error);
+		}
+	}
+
+	private IEnumerator StoreItem() {
+		WWWForm form = new WWWForm();
+		form.AddField("name", playername);
+		form.AddField("usercode", playercode);
+		form.AddField("geopos", transform.position.z+","+transform.position.x);
+		form.AddField("heading", Input.compass.trueHeading.ToString("R"));
+		form.AddField("itemid", ItemId);
+		form.AddField("itemtype", ItemType);
+		WWW storeResponse = new WWW(storeUrl, form);
+		
+		yield return storeResponse;
+		
+		if (storeResponse.error == null) {
+			var N = JSON.Parse(storeResponse.text);
+			string Status = N[0]["status"].ToString().Replace("\"", "");
+			string itemID = N[0]["item"].ToString().Replace("\"", "");
+
+			//fehler bei store
+			if (Status == "item stored") {
+				hasItem = false;
+				MessageText.text = "ITEM SUCCESSFULLY \n#DROPPED#";
+			}
+			
+		} else {	
+			Debug.Log("Error: "+ storeResponse.error);
 		}
 	}	
 }
