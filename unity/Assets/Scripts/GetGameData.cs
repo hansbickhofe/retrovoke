@@ -5,7 +5,7 @@ using System.Collections;
 
 
 public class GetGameData : MonoBehaviour {
-
+	
 	public GameObject[] allGoodies;
 	//public string[] goodieStat;
 	//int goodieID;

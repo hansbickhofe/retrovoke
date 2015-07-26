@@ -31,7 +31,10 @@ public class NavToPosition : MonoBehaviour {
 
 	public int idleSpeed;
 	bool inRange = false;
+
+	//texte
 	public GameObject OutText;
+	public GameObject MessageText;
 
 	public float demoSpeed;
 	public string playername;

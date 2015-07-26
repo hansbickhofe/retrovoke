@@ -2,10 +2,15 @@
 using SimpleJSON;
 using System;
 using System.Collections;
+using UnityEngine.UI;
 
 public class Player : MonoBehaviour {
 	
 	public GetGameData GameDataScript;
+
+
+	//texte
+	public Text MessageText;
 
 	private string url = "https://retrohunter-987.appspot.com/pickup";
 	//private string url = "http://localhost:15080/pickup";	
@@ -40,6 +45,7 @@ public class Player : MonoBehaviour {
 			ItemId = other.gameObject.GetComponent<GoodieParams>().id;
 			ItemType = other.gameObject.GetComponent<GoodieParams>().type;
 			Debug.Log("Valid Hit at :" + ItemId + " " + ItemType.ToString());
+			MessageText.text = "ITEM PICKED\n##GO to the\nPIXEL PIT##";
 			StartCoroutine(PickupItem());
 		}
 
@@ -56,7 +62,6 @@ public class Player : MonoBehaviour {
 		form.AddField("heading", Input.compass.trueHeading.ToString("R"));
 		form.AddField("itemid", ItemId);
         form.AddField("itemtype", ItemType);
-		form.AddField ("beaconinrange", "0");
         WWW pickupResponse = new WWW(url, form);
 		
 		yield return pickupResponse;
@@ -65,9 +70,12 @@ public class Player : MonoBehaviour {
 			var N = JSON.Parse(pickupResponse.text);
 			string Status = N[0]["status"].ToString().Replace("\"", "");
 			string itemID = N[0]["item"].ToString().Replace("\"", "");
-			if (Status != "item picked") hasItem = false;
-			//print ("stat: "+Status);
-			//print ("id: "+itemID);
+
+			//fehler bei pick up
+			if (Status != "item picked") {
+				hasItem = false;
+				MessageText.text = "PICKUP FAILED\n#ITEM OWNED BY\nOTHER PLAYER#";
+			}
 
 		} else {	
 			Debug.Log("Error: "+ pickupResponse.error);
