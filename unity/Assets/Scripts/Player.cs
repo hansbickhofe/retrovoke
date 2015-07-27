@@ -12,6 +12,7 @@ public class Player : MonoBehaviour {
 
 	//texte
 	public Text MessageText;
+	public Text ScoreText;
 
 	private string pickUpUrl = "https://retrohunter-987.appspot.com/pickup";
 	private string storeUrl = "https://retrohunter-987.appspot.com/store";
@@ -39,8 +40,13 @@ public class Player : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+		// PlayerPrefs.SetString("playername","PED");
+		// PlayerPrefs.SetString("playercode","NNYG696505WZ");
+		// PlayerPrefs.SetInt("playerteam", 1);
 		playername = PlayerPrefs.GetString("playername");
 		playercode = PlayerPrefs.GetString("playercode");
+
+		ScoreText.text = "SCORE\n"+PlayerPrefs.GetInt("PlayerScore");
 	}
 
 	void OnTriggerEnter(Collider other) {
@@ -124,8 +130,6 @@ public class Player : MonoBehaviour {
 				hasItem = false;
 				ItemId = "" ;
 				MessageText.text = "ITEM SUCCESSFULLY \n#DROPPED#";
-				
-				
 			}
 			
 		} else {	

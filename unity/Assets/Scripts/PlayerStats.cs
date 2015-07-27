@@ -14,14 +14,19 @@ public class PlayerStats : MonoBehaviour {
 	public string playertotalscore;
  	private string url = "https://retrohunter-987.appspot.com/score";
 	// private string url = "http://localhost:15080/score";
-	
+
+	TextMesh textObject0;
+	TextMesh textObject1;
+
 	// Use this for initialization
 	void Start () {
 		playername = PlayerPrefs.GetString("playername");
 		playerteam = PlayerPrefs.GetInt("playerteam");
 		StartCoroutine(GetScore());
-		TextMesh textObject0 = GameObject.Find("Payerscore").GetComponent<TextMesh>();
-		textObject0.text = playertotalscore;
+
+		textObject0 = GameObject.Find("Playerscore").GetComponent<TextMesh>();
+		//textObject0.text = playertotalscore;
+		textObject1 = GameObject.Find("Playername").GetComponent<TextMesh>();
 
 		Invader.SetActive(false);
 		Pacman.SetActive(false);
@@ -52,9 +57,9 @@ public class PlayerStats : MonoBehaviour {
 	
 	void Update () {
 	
-		TextMesh textObject0 = GameObject.Find("Payerscore").GetComponent<TextMesh>();
+		//TextMesh textObject0 = GameObject.Find("Playerscore").GetComponent<TextMesh>();
 		textObject0.text = playertotalscore;
-		TextMesh textObject1 = GameObject.Find("Payername").GetComponent<TextMesh>();
+		//TextMesh textObject1 = GameObject.Find("Playername").GetComponent<TextMesh>();
 		textObject1.text = playername;
 		
 		
@@ -95,6 +100,7 @@ public class PlayerStats : MonoBehaviour {
 		if (sendScoreRequest.error == null) {
 			var N = JSON.Parse(sendScoreRequest.text);
 			playertotalscore = N["TotalScore"];
+			PlayerPrefs.SetInt("PlayerScore",int.Parse(playertotalscore));
 			Debug.Log(N);
 		} else {
 			Debug.Log("Error: "+ sendScoreRequest.error);

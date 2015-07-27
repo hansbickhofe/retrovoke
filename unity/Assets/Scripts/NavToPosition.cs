@@ -9,7 +9,7 @@ public class NavToPosition : MonoBehaviour {
 	GetGameData gameData;
 
 
-	public GameObject DebugTextfield;
+	//public GameObject DebugTextfield;
 
 	public float lat = 50.944303f;
 	public float lon =  6.937723f;
@@ -177,7 +177,7 @@ public class NavToPosition : MonoBehaviour {
 			player.transform.position = new Vector3(posX,0,posZ);
 			playerRotation = new Vector3(0,shipDir,0);
 			player.transform.rotation = Quaternion.Slerp(player.transform.rotation, Quaternion.Euler(playerRotation), Time.deltaTime * 5);
-			Cam.position = new Vector3(camX,6,camZ-2.5f);
+			Cam.position = new Vector3(camX,10,camZ-6f);
 			OutText.SetActive(false);
 			
 		} else {
@@ -188,7 +188,7 @@ public class NavToPosition : MonoBehaviour {
 		if (posX < -5 || posX > 5 || posZ < -9 || posZ > 9) inRange = false;
 		else inRange = true; 
 
-		DebugTextfield.GetComponent<Text>().text = inRange+" "+Input.compass.trueHeading+"\n"+posX+" "+posZ;
+		//DebugTextfield.GetComponent<Text>().text = inRange+" "+Input.compass.trueHeading+"\n"+posX+" "+posZ;
 	}
 	
 	private IEnumerator SendPos()
@@ -221,7 +221,7 @@ public class NavToPosition : MonoBehaviour {
 		player.transform.localScale = new Vector3(4,4,4);
 		player.transform.position = new Vector3(0,5,0);
 		player.transform.Rotate(new Vector3(Time.deltaTime * idleSpeed,Time.deltaTime * idleSpeed,0));
-		Cam.position = new Vector3(camX,15,camZ-4);
+		Cam.position = new Vector3(camX,20,camZ-10);
 	}
 
 	void Click(string Target){

@@ -16,7 +16,5 @@ public class CameraControl : MonoBehaviour {
 		//out of evoke
 		if (Target.position.x < -5 || Target.position.x > 5 || Target.position.z < -9 || Target.position.z > 9) inRange = false;
 		else inRange = true;
-
-
 	}
 }
