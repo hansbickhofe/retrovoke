@@ -17,7 +17,7 @@ public class NavToPosition : MonoBehaviour {
 	public float multiY = 7000;
 	public float time = 5;
 	private string url = "https://retrohunter-987.appspot.com/pos";
-	//private string url = "http://localhost:15080/pos";
+	// private string url = "http://localhost:15080/pos";
 
 	public float posX;
 	public float posZ;

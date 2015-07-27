@@ -12,7 +12,7 @@ public class GetGameData : MonoBehaviour {
 	public string PlayerName ;
 
 	private string url = "https://retrohunter-987.appspot.com/pos.getitems";
-	// private string url = "http://localhost:15080/pos.getitems";
+	//private string url = "http://localhost:15080/pos.getitems";
 	public float time = 5;
 
 

@@ -15,7 +15,9 @@ public class Player : MonoBehaviour {
 
 	private string pickUpUrl = "https://retrohunter-987.appspot.com/pickup";
 	private string storeUrl = "https://retrohunter-987.appspot.com/store";
-	//private string url = "http://localhost:15080/pickup";	
+
+	// private string pickUpUrl = "http://localhost:15080/pickup";
+	// private string storeUrl = "http://localhost:15080/store";
 	public string playername;
 	public string playercode;
 	public bool hasItem = false;
@@ -91,6 +93,7 @@ public class Player : MonoBehaviour {
 			else {
 				hasItem = true;
 				ItemId = itemID;
+				Debug.Log("Pickup: "+ itemID);
 			}
 
 		} else {	
