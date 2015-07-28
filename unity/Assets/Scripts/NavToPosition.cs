@@ -146,12 +146,12 @@ public class NavToPosition : MonoBehaviour {
 
 			// camera
 			camX = player.transform.position.x;
-			if (player.transform.position.x < -2.5f) camX = -2.5f;
-			if (player.transform.position.x > 2.5f) camX = 2.5f;
+			if (player.transform.position.x < -10f) camX = -10f;
+			if (player.transform.position.x > 10f) camX = 10f;
 			
 			camZ = player.transform.position.z;
-			if (player.transform.position.z < -4.5f) camZ = -4.5f;
-			if (player.transform.position.z > 4.5f) camZ = 4.5f;
+			if (player.transform.position.z < -14f) camZ = -14f;
+			if (player.transform.position.z > 14f) camZ = 14f;
 
 
 			//posX = -6; 
@@ -169,7 +169,7 @@ public class NavToPosition : MonoBehaviour {
 
 		}
 
-		if (posX < -5 || posX > 5 || posZ < -9 || posZ > 9) inRange = false;
+		if (posX < -12 || posX > 12 || posZ < -16 || posZ > 16) inRange = false;
 		else inRange = true;
 
 		if (inRange){
@@ -225,6 +225,9 @@ public class NavToPosition : MonoBehaviour {
 	}
 
 	void Click(string Target){
-		if (Target == "PlayerObj") Application.LoadLevel("player");
+		if (Target == "PlayerObj") {
+
+			Application.LoadLevel("player");
+		}
 	}
 }

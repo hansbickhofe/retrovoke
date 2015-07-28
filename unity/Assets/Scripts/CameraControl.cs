@@ -14,7 +14,7 @@ public class CameraControl : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		//out of evoke
-		if (Target.position.x < -5 || Target.position.x > 5 || Target.position.z < -9 || Target.position.z > 9) inRange = false;
+		if (Target.position.x < -12 || Target.position.x > 12 || Target.position.z < -16 || Target.position.z > 16) inRange = false;
 		else inRange = true;
 	}
 }

@@ -8,17 +8,23 @@ public class Player : MonoBehaviour {
 	
 	public GetGameData GameDataScript;
 	public GoodieParams GoodieDataScript;
-
+	
+	//pixelpit
+	public Transform PixelPit;
+	public GameObject PixelParticle;
 
 	//texte
 	public Text MessageText;
 	public Text ScoreText;
+	public Text TimeText;
 
 	private string pickUpUrl = "https://retrohunter-987.appspot.com/pickup";
 	private string storeUrl = "https://retrohunter-987.appspot.com/store";
+	private string dropUrl = "https://retrohunter-987.appspot.com/drop";
 
 	// private string pickUpUrl = "http://localhost:15080/pickup";
 	// private string storeUrl = "http://localhost:15080/store";
+
 	public string playername;
 	public string playercode;
 	public bool hasItem = false;
@@ -35,6 +41,8 @@ public class Player : MonoBehaviour {
 	float shipDir;
 	public float demoSpeed;
 
+	public float ItemTime = 10;
+
 	//public string hasitemid ;
 	public int hasitemtype ;
 
@@ -46,7 +54,19 @@ public class Player : MonoBehaviour {
 		playername = PlayerPrefs.GetString("playername");
 		playercode = PlayerPrefs.GetString("playercode");
 
+		hasItem = false;
+		ItemId = "" ;
+
 		ScoreText.text = "SCORE\n"+PlayerPrefs.GetInt("PlayerScore");
+	}
+
+	void Update(){
+		if (hasItem){
+			if (ItemTime > 0) ItemTime -= Time.deltaTime;
+			else StartCoroutine(DropItem());
+		}
+
+		TimeText.text = "Time\n"+(int)ItemTime;
 	}
 
 	void OnTriggerEnter(Collider other) {
@@ -64,12 +84,20 @@ public class Player : MonoBehaviour {
 			Debug.Log("Allready taken by:" + other.gameObject.GetComponent<GoodieParams>().takenBy);
 		}
 
-
 		//drop item
 		if (other.gameObject.tag == "Pit" && hasItem) {
 			print("pit");
 			StartCoroutine(StoreItem());
 		}
+
+		if (other.gameObject.tag == "Pit") {
+			//PixelVolcano();
+		}
+	}
+
+	void OnApplicationQuit() {
+		print ("quit");
+		StartCoroutine(DropItem());
 	}
 	
 	private IEnumerator PickupItem() {
@@ -100,6 +128,8 @@ public class Player : MonoBehaviour {
 				hasItem = true;
 				ItemId = itemID;
 				Debug.Log("Pickup: "+ itemID);
+				ItemTime = 10;
+				GameDataScript.RefreshGameDataOnce();
 			}
 
 		} else {	
@@ -107,6 +137,36 @@ public class Player : MonoBehaviour {
 			hasItem = false;
 		}
 	}
+
+	private IEnumerator DropItem() {
+		WWWForm form = new WWWForm();
+		form.AddField("name", playername);
+		form.AddField("usercode", playercode);
+		form.AddField("geopos", transform.position.z+","+transform.position.x);
+		form.AddField("heading", Input.compass.trueHeading.ToString("R"));
+		form.AddField("itemid", ItemId);
+		form.AddField("itemtype", ItemType);
+		WWW dropResponse = new WWW(dropUrl, form);
+		
+		yield return dropResponse;
+		
+		if (dropResponse.error == null) {
+			var N = JSON.Parse(dropResponse.text);
+			string Status = N[0]["status"].ToString().Replace("\"", "");
+			string itemID = N[0]["item"].ToString().Replace("\"", "");
+			
+			//kein fehler bei store
+			if (Status == "item dropped") {
+				hasItem = false;
+				ItemId = "" ;
+				//MessageText.text = "ITEM SUCCESSFULLY \n#DROPPED#";
+				GameDataScript.RefreshGameDataOnce();
+			}
+			
+		} else {	
+			Debug.Log("Error: "+ dropResponse.error);
+		}
+	}	
 
 	private IEnumerator StoreItem() {
 		WWWForm form = new WWWForm();
@@ -129,11 +189,22 @@ public class Player : MonoBehaviour {
 			if (Status == "item stored") {
 				hasItem = false;
 				ItemId = "" ;
-				MessageText.text = "ITEM SUCCESSFULLY \n#DROPPED#";
+				MessageText.text = "ITEM SUCCESSFULLY \n#Crunched!#";
+				PixelVolcano();
+				GameDataScript.RefreshGameDataOnce();
 			}
 			
 		} else {	
 			Debug.Log("Error: "+ storeResponse.error);
 		}
-	}	
+	}
+
+	void PixelVolcano(){
+		for (int i=0; i < 25; i++){
+			Vector3 initPos = PixelPit.position + UnityEngine.Random.insideUnitSphere * .5f;
+			GameObject newParticle = Instantiate(PixelParticle, initPos, Quaternion.identity) as GameObject;
+			newParticle.GetComponent<Rigidbody>().AddForce(Vector3.up*10);
+		
+		}
+	}
 }

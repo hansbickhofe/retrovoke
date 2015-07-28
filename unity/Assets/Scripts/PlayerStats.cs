@@ -25,7 +25,6 @@ public class PlayerStats : MonoBehaviour {
 		StartCoroutine(GetScore());
 
 		textObject0 = GameObject.Find("Playerscore").GetComponent<TextMesh>();
-		//textObject0.text = playertotalscore;
 		textObject1 = GameObject.Find("Playername").GetComponent<TextMesh>();
 
 		Invader.SetActive(false);
@@ -56,12 +55,8 @@ public class PlayerStats : MonoBehaviour {
 	}
 	
 	void Update () {
-	
-		//TextMesh textObject0 = GameObject.Find("Playerscore").GetComponent<TextMesh>();
 		textObject0.text = playertotalscore;
-		//TextMesh textObject1 = GameObject.Find("Playername").GetComponent<TextMesh>();
 		textObject1.text = playername;
-		
 		
 		//mouse
 		if (Input.GetMouseButtonDown(0)){

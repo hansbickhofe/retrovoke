@@ -19,7 +19,7 @@ public class GetGameData : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		PlayerName = PlayerPrefs.GetString("playername");
-		StartCoroutine(GetGameObjects());
+		StartCoroutine(GetGameObjectsTimed());
 		//updateGoodies();
 	}
 
@@ -28,7 +28,31 @@ public class GetGameData : MonoBehaviour {
 // position im game
 // [{"takenby":"HB1","pos":"50.9352136678,7.00834023551","itemid":5418393301680128,"playerid":4855443348258816,"faction":2},
 
-	private IEnumerator GetGameObjects()
+	public void RefreshGameDataOnce(){
+		StartCoroutine(GetGameObjectsOnce());
+	}
+
+	private IEnumerator GetGameObjectsOnce()
+	{	
+		while(true) 
+		{ 
+			WWWForm form = new WWWForm();
+			form.AddField("name", PlayerName);
+			WWW requestGameObjects = new WWW(url, form);
+			
+			yield return requestGameObjects;
+			
+			if (requestGameObjects.error == null) {
+				CreateNewGoodie(requestGameObjects.text);
+			} else {
+				Debug.Log("Error: "+ requestGameObjects.error);
+			}
+			//	Debug.Log ("OnCoroutine: "+(int)Time.time); 
+			yield return new WaitForSeconds(time);
+		}	
+	}
+
+	private IEnumerator GetGameObjectsTimed()
 	{	
 		while(true) 
 		{ 
@@ -59,13 +83,14 @@ public class GetGameData : MonoBehaviour {
 			string[] PosArray=N[GoodieCounter]["pos"].ToString().Replace("\"", "").Split(',') ;
 			string GoodieID = N[GoodieCounter]["itemid"].ToString().Replace("\"", "");
 			string TakenBy = N[GoodieCounter]["takenby"].ToString().Replace("\"", "");
-			//int ItemType = int.Parse(N[GoodieCounter]["type"]);
+			int ItemType = int.Parse(N[GoodieCounter]["type"]);
+			print (ItemType);
 
 			float z = float.Parse(PosArray[0].Trim());
 			float x = float.Parse(PosArray[1].Trim());
 
 			// bitte goodie auf y 0 positionieren, sonst hab ich keine collision
-			GameObject newGoodie = Instantiate(allGoodies[5], new Vector3(x,0,z), Quaternion.identity) as GameObject;
+			GameObject newGoodie = Instantiate(allGoodies[ItemType], new Vector3(x,0,z), Quaternion.identity) as GameObject;
 			newGoodie.GetComponent<GoodieParams>().id = GoodieID;
 			newGoodie.GetComponent<GoodieParams>().takenBy = TakenBy;
 
