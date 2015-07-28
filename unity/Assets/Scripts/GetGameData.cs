@@ -12,7 +12,7 @@ public class GetGameData : MonoBehaviour {
 	public string PlayerName ;
 
 	private string url = "https://retrohunter-987.appspot.com/pos.getitems";
-	//private string url = "http://localhost:15080/pos.getitems";
+	// private string url = "http://localhost:15080/pos.getitems";
 	public float time = 5;
 
 
@@ -34,22 +34,18 @@ public class GetGameData : MonoBehaviour {
 
 	private IEnumerator GetGameObjectsOnce()
 	{	
-		while(true) 
-		{ 
-			WWWForm form = new WWWForm();
-			form.AddField("name", PlayerName);
-			WWW requestGameObjects = new WWW(url, form);
-			
-			yield return requestGameObjects;
-			
-			if (requestGameObjects.error == null) {
-				CreateNewGoodie(requestGameObjects.text);
-			} else {
-				Debug.Log("Error: "+ requestGameObjects.error);
-			}
-			//	Debug.Log ("OnCoroutine: "+(int)Time.time); 
-			yield return new WaitForSeconds(time);
-		}	
+		WWWForm form = new WWWForm();
+		form.AddField("name", PlayerName);
+		WWW requestGameObjects = new WWW(url, form);
+		
+		yield return requestGameObjects;
+		
+		if (requestGameObjects.error == null) {
+			CreateNewGoodie(requestGameObjects.text);
+		} else {
+			Debug.Log("Error: "+ requestGameObjects.error);
+		}
+		//	Debug.Log ("OnCoroutine: "+(int)Time.time); 
 	}
 
 	private IEnumerator GetGameObjectsTimed()

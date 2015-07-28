@@ -24,6 +24,7 @@ public class Player : MonoBehaviour {
 
 	// private string pickUpUrl = "http://localhost:15080/pickup";
 	// private string storeUrl = "http://localhost:15080/store";
+	// private string dropUrl = "http://localhost:15080/drop";
 
 	public string playername;
 	public string playercode;
@@ -62,8 +63,14 @@ public class Player : MonoBehaviour {
 
 	void Update(){
 		if (hasItem){
-			if (ItemTime > 0) ItemTime -= Time.deltaTime;
-			else StartCoroutine(DropItem());
+			if (ItemTime > 0) {
+				ItemTime -= Time.deltaTime;
+			}
+			else {
+				StartCoroutine(DropItem());
+				//Debug.Log("Drop " + ItemTime);
+				GameDataScript.RefreshGameDataOnce();
+			}
 		}
 
 		TimeText.text = "Time\n"+(int)ItemTime;
@@ -147,7 +154,8 @@ public class Player : MonoBehaviour {
 		form.AddField("itemid", ItemId);
 		form.AddField("itemtype", ItemType);
 		WWW dropResponse = new WWW(dropUrl, form);
-		
+		hasItem = false; 
+		ItemId = "" ;
 		yield return dropResponse;
 		
 		if (dropResponse.error == null) {
