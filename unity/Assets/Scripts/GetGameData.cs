@@ -80,7 +80,7 @@ public class GetGameData : MonoBehaviour {
 			string GoodieID = N[GoodieCounter]["itemid"].ToString().Replace("\"", "");
 			string TakenBy = N[GoodieCounter]["takenby"].ToString().Replace("\"", "");
 			int ItemType = int.Parse(N[GoodieCounter]["type"]);
-			print (ItemType);
+			//print (ItemType);
 
 			float z = float.Parse(PosArray[0].Trim());
 			float x = float.Parse(PosArray[1].Trim());

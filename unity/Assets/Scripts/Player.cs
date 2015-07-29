@@ -21,6 +21,7 @@ public class Player : MonoBehaviour {
 	private string pickUpUrl = "https://retrohunter-987.appspot.com/pickup";
 	private string storeUrl = "https://retrohunter-987.appspot.com/store";
 	private string dropUrl = "https://retrohunter-987.appspot.com/drop";
+	private string scoreUrl = "https://retrohunter-987.appspot.com/score";
 
 	// private string pickUpUrl = "http://localhost:15080/pickup";
 	// private string storeUrl = "http://localhost:15080/store";
@@ -99,9 +100,9 @@ public class Player : MonoBehaviour {
 			StartCoroutine(StoreItem());
 		}
 
-		if (other.gameObject.tag == "Pit") {
-			PixelVolcano();
-		}
+//		if (other.gameObject.tag == "Pit") {
+//			PixelVolcano();
+//		}
 	}
 
 	void OnApplicationQuit() {
@@ -203,6 +204,7 @@ public class Player : MonoBehaviour {
 				hasItem = false;
 				ItemId = "" ;
 				MessageText.text = "ITEM SUCCESSFULLY \n#Crunched!#";
+				StartCoroutine(GetScore());
 				PixelVolcano();
 				GameDataScript.RefreshGameDataOnce();
 			}
@@ -211,6 +213,26 @@ public class Player : MonoBehaviour {
 			Debug.Log("Error: "+ storeResponse.error);
 		}
 	}
+
+	private IEnumerator GetScore()
+	{
+		
+		WWWForm form = new WWWForm();
+		form.AddField("name", playername);
+		
+		WWW sendScoreRequest = new WWW(scoreUrl, form);
+		
+		yield return sendScoreRequest;
+		
+		if (sendScoreRequest.error == null) {
+			var N = JSON.Parse(sendScoreRequest.text);
+			PlayerPrefs.SetInt("PlayerScore",int.Parse(N["TotalScore"]));
+			ScoreText.text = "SCORE\n"+N["TotalScore"];
+			Debug.Log(N);
+		} else {
+			Debug.Log("Error: "+ sendScoreRequest.error);
+		}
+	}	
 
 	void PixelVolcano(){
 		for (int i=0; i < 50; i++){
