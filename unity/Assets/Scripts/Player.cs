@@ -68,7 +68,9 @@ public class Player : MonoBehaviour {
 			}
 			else {
 				StartCoroutine(DropItem());
-				//Debug.Log("Drop " + ItemTime);
+				hasItem = false; // vorsichtshalber auf false setzen. kann in der coroutine resetted werden, falls der drop schief geht.
+
+				// itemdarstellung refreshen
 				GameDataScript.RefreshGameDataOnce();
 			}
 		}
@@ -98,7 +100,7 @@ public class Player : MonoBehaviour {
 		}
 
 		if (other.gameObject.tag == "Pit") {
-			//PixelVolcano();
+			PixelVolcano();
 		}
 	}
 
@@ -163,15 +165,18 @@ public class Player : MonoBehaviour {
 			string Status = N[0]["status"].ToString().Replace("\"", "");
 			string itemID = N[0]["item"].ToString().Replace("\"", "");
 			
-			//kein fehler bei store
+			//kein fehler bei drop
 			if (Status == "item dropped") {
 				hasItem = false;
 				ItemId = "" ;
-				//MessageText.text = "ITEM SUCCESSFULLY \n#DROPPED#";
+
+				// itemdarstellung refreshen
 				GameDataScript.RefreshGameDataOnce();
 			}
-			
-		} else {	
+		} else {
+
+			//reset falls drop schiefgeht
+			hasItem = true;
 			Debug.Log("Error: "+ dropResponse.error);
 		}
 	}	
@@ -208,11 +213,20 @@ public class Player : MonoBehaviour {
 	}
 
 	void PixelVolcano(){
-		for (int i=0; i < 25; i++){
+		for (int i=0; i < 50; i++){
 			Vector3 initPos = PixelPit.position + UnityEngine.Random.insideUnitSphere * .5f;
 			GameObject newParticle = Instantiate(PixelParticle, initPos, Quaternion.identity) as GameObject;
+
+			//size
+			float scale = UnityEngine.Random.value/3;
+			newParticle.transform.localScale = new Vector3(scale,scale,scale);
+
+			//color
+			Color newColor = new Color(UnityEngine.Random.value*2, UnityEngine.Random.value*2, UnityEngine.Random.value*2, 1.0f );
+			newParticle.GetComponent<Renderer>().material.color = newColor;
+
+			//force
 			newParticle.GetComponent<Rigidbody>().AddForce(Vector3.up*10);
-		
 		}
 	}
 }
