@@ -12,6 +12,7 @@ public class PlayerStats : MonoBehaviour {
 	public string playername;
 	public int playerteam; // 0 = uselected, 1 = invaders, 2 = pac men, 3 = galagas
 	public string playertotalscore;
+	public string playerrank;
  	private string url = "https://retrohunter-987.appspot.com/score";
 	//private string url = "http://localhost:15080/score";
 
@@ -55,7 +56,7 @@ public class PlayerStats : MonoBehaviour {
 	}
 	
 	void Update () {
-		textObject0.text = playertotalscore;
+		textObject0.text = playertotalscore + " [" + playerrank + "]";
 		textObject1.text = playername;
 		
 		//mouse
@@ -95,6 +96,7 @@ public class PlayerStats : MonoBehaviour {
 		if (sendScoreRequest.error == null) {
 			var N = JSON.Parse(sendScoreRequest.text);
 			playertotalscore = N["TotalScore"];
+			playerrank = N["Rank"];
 			PlayerPrefs.SetInt("PlayerScore",int.Parse(playertotalscore));
 			Debug.Log(N);
 		} else {
