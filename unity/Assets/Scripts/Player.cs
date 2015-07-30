@@ -158,7 +158,7 @@ public class Player : MonoBehaviour {
 		form.AddField("itemtype", ItemType);
 		WWW dropResponse = new WWW(dropUrl, form);
 		hasItem = false; 
-		ItemId = "" ;
+		ItemId = "0" ;
 		yield return dropResponse;
 		
 		if (dropResponse.error == null) {
@@ -169,7 +169,7 @@ public class Player : MonoBehaviour {
 			//kein fehler bei drop
 			if (Status == "item dropped") {
 				hasItem = false;
-				ItemId = "" ;
+				ItemId = "0" ;
 
 				// itemdarstellung refreshen
 				GameDataScript.RefreshGameDataOnce();
