@@ -12,8 +12,8 @@ public class PlayerStats : MonoBehaviour {
 	public string playername;
 	public int playerteam; // 0 = uselected, 1 = invaders, 2 = pac men, 3 = galagas
 	public string playertotalscore;
- 	// private string url = "https://retrohunter-987.appspot.com/score";
-	private string url = "http://localhost:15080/score";
+ 	private string url = "https://retrohunter-987.appspot.com/score";
+	//private string url = "http://localhost:15080/score";
 
 	TextMesh textObject0;
 	TextMesh textObject1;
