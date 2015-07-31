@@ -10,13 +10,18 @@ public class Player : MonoBehaviour {
 	public GoodieParams GoodieDataScript;
 	
 	//pixelpit
-	public Transform PixelPit;
+	public Transform PixelPit1;
+	public Transform PixelPit2;
+	public Transform PixelPit3;
+
 	public GameObject PixelParticle;
 
 	//texte
 	public Text MessageText;
 	public Text ScoreText;
 	public Text TimeText;
+	public Text StatsButton;
+
 
 	private string pickUpUrl = "https://retrohunter-987.appspot.com/pickup";
 	private string storeUrl = "https://retrohunter-987.appspot.com/store";
@@ -42,6 +47,7 @@ public class Player : MonoBehaviour {
 	Vector3 playerRotation;
 	float shipDir;
 	public float demoSpeed;
+	public string currentPit;
 
 	public float ItemTime = 30;
 
@@ -63,7 +69,33 @@ public class Player : MonoBehaviour {
 	}
 
 	void Update(){
+
+		//mouse click
+		if (Input.GetMouseButtonDown(0)){
+			Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
+			RaycastHit hitClick;
+			
+			if (Physics.Raycast(ray, out hitClick)){
+				Debug.Log ("Touched: "+hitClick.collider.name);
+				Click (hitClick.collider.name);
+			}
+		}
+		
+		// touch input
+		if (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began)
+		{
+			RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint((Input.GetTouch (0).position)), Vector2.zero);
+			
+			if (hit.collider != null)
+			{
+				Debug.Log ("Touched: "+hit.collider.name);
+				Click (hit.collider.name);
+			}
+		}
+
+
 		if (hasItem){
+			StatsButton.text = "";
 			if (ItemTime > 0) {
 				ItemTime -= Time.deltaTime;
 			}
@@ -74,9 +106,17 @@ public class Player : MonoBehaviour {
 				// itemdarstellung refreshen
 				GameDataScript.RefreshGameDataOnce();
 			}
+		} else {
+			StatsButton.text = "STATS";
 		}
 
 		TimeText.text = "Time\n"+(int)ItemTime;
+	}
+
+	void Click(string Target){
+		if (Target == "StatsButton") {
+			if (!hasItem) Application.LoadLevel("player");
+		}
 	}
 
 	void OnTriggerEnter(Collider other) {
@@ -96,7 +136,8 @@ public class Player : MonoBehaviour {
 
 		//drop item
 		if (other.gameObject.tag == "Pit" && hasItem) {
-			print("pit");
+			print(other.gameObject.name);
+			currentPit = other.gameObject.name;
 			StartCoroutine(StoreItem());
 		}
 
@@ -234,9 +275,23 @@ public class Player : MonoBehaviour {
 		}
 	}	
 
-	void PixelVolcano(){
+	void PixelVolcano() {
+
 		for (int i=0; i < 50; i++){
-			Vector3 initPos = PixelPit.position + UnityEngine.Random.insideUnitSphere * .5f;
+			Vector3 initPos = Vector3.zero;
+
+			if (currentPit == "PixelPit1"){
+				initPos = PixelPit1.position + UnityEngine.Random.insideUnitSphere * .5f;
+			}
+
+			if (currentPit == "PixelPit2"){
+				initPos = PixelPit2.position + UnityEngine.Random.insideUnitSphere * .5f;
+			}
+
+			if (currentPit == "PixelPit3"){
+				initPos = PixelPit3.position + UnityEngine.Random.insideUnitSphere * .5f;
+			}
+
 			GameObject newParticle = Instantiate(PixelParticle, initPos, Quaternion.identity) as GameObject;
 
 			//size

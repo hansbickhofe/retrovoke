@@ -11,20 +11,15 @@ public class GoodieParams : MonoBehaviour {
 	public string takenBy = "";
 	public int type ;
 	public bool posFromPlayer = false;
-
-	public GameObject iconGalaga;
-	public GameObject iconPacman;
-	public GameObject iconInvader;
+	
 	public GameObject iconText;
+	//public GameObject iconFaction;
 	
 	public GameObject playerPosition;
 
 	// Use this for initialization
 	void Start () {
 		playerPosition = GameObject.Find("PlayerObj");
-		iconGalaga.SetActive(false);
-		iconPacman.SetActive(false);
-		iconInvader.SetActive(false);
 	}
 
 	void Update () {
@@ -34,5 +29,13 @@ public class GoodieParams : MonoBehaviour {
 		} else {
 			transform.Rotate(axis, speed*Time.deltaTime);
 		}
+	}
+
+
+	public void showIcon (string name) {
+		iconText.GetComponent<TextMesh>().text = name;
+//		if (faction == "1") iconFaction.GetComponent<TextMesh>().text = "INV";
+//		else if (faction == "2") iconFaction.GetComponent<TextMesh>().text = "PAC";
+//		else if (faction == "3") iconFaction.GetComponent<TextMesh>().text = "GAL";
 	}
 }

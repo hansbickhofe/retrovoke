@@ -91,28 +91,28 @@ public class NavToPosition : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
-		//mouse click
-		if (Input.GetMouseButtonDown(0)){
-			Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
-			RaycastHit hitClick;
-			
-			if (Physics.Raycast(ray, out hitClick)){
-				Debug.Log ("Touched: "+hitClick.collider.name);
-				Click (hitClick.collider.name);
-			}
-		}
-		
-		// touch input
-		if (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began)
-		{
-			RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint((Input.GetTouch (0).position)), Vector2.zero);
-			
-			if (hit.collider != null)
-			{
-				Debug.Log ("Touched: "+hit.collider.name);
-				Click (hit.collider.name);
-			}
-		}
+//		//mouse click
+//		if (Input.GetMouseButtonDown(0)){
+//			Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
+//			RaycastHit hitClick;
+//			
+//			if (Physics.Raycast(ray, out hitClick)){
+//				Debug.Log ("Touched: "+hitClick.collider.name);
+//				Click (hitClick.collider.name);
+//			}
+//		}
+//		
+//		// touch input
+//		if (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began)
+//		{
+//			RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint((Input.GetTouch (0).position)), Vector2.zero);
+//			
+//			if (hit.collider != null)
+//			{
+//				Debug.Log ("Touched: "+hit.collider.name);
+//				Click (hit.collider.name);
+//			}
+//		}
 
 
 		if (myGPS.gpsReady){
@@ -224,10 +224,9 @@ public class NavToPosition : MonoBehaviour {
 		Cam.position = new Vector3(camX,20,camZ-10);
 	}
 
-	void Click(string Target){
-		if (Target == "PlayerObj") {
-
-			Application.LoadLevel("player");
-		}
-	}
+//	void Click(string Target){
+//		if (Target == "StatsButton") {
+//			Application.LoadLevel("player");
+//		}
+//	}
 }

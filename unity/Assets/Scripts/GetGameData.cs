@@ -79,7 +79,7 @@ public class GetGameData : MonoBehaviour {
 			string[] PosArray=N[GoodieCounter]["pos"].ToString().Replace("\"", "").Split(',') ;
 			string GoodieID = N[GoodieCounter]["itemid"].ToString().Replace("\"", "");
 			string TakenBy = N[GoodieCounter]["takenby"].ToString().Replace("\"", "");
-			string faction = N[GoodieCounter]["faction"].ToString().Replace("\"", "");
+			string Faction = N[GoodieCounter]["faction"].ToString().Replace("\"", "");
 			int ItemType = int.Parse(N[GoodieCounter]["type"]);
 			//print (ItemType);
 
@@ -97,14 +97,9 @@ public class GetGameData : MonoBehaviour {
 			} else if (TakenBy == PlayerName) {
 				//goodie neu positionieren
 				GoodieScript.posFromPlayer = true;
-				GoodieScript.iconText.GetComponent<TextMesh>().text = "YOU";
-				print ("you: "+faction);
+				GoodieScript.showIcon("YOU");
 			} else {
-				if (faction == "1") GoodieScript.iconInvader.SetActive(true);
-				else if (faction == "2") GoodieScript.iconPacman.SetActive(true);
-				else if (faction == "3") GoodieScript.iconGalaga.SetActive(true);
-				GoodieScript.iconText.GetComponent<TextMesh>().text = TakenBy;
-				print ("enemy: "+faction);
+				GoodieScript.showIcon(TakenBy);
 			}
 
 			//in den unterordner schieben
