@@ -79,6 +79,7 @@ public class GetGameData : MonoBehaviour {
 			string[] PosArray=N[GoodieCounter]["pos"].ToString().Replace("\"", "").Split(',') ;
 			string GoodieID = N[GoodieCounter]["itemid"].ToString().Replace("\"", "");
 			string TakenBy = N[GoodieCounter]["takenby"].ToString().Replace("\"", "");
+			string faction = N[GoodieCounter]["faction"].ToString().Replace("\"", "");
 			int ItemType = int.Parse(N[GoodieCounter]["type"]);
 			//print (ItemType);
 
@@ -87,16 +88,28 @@ public class GetGameData : MonoBehaviour {
 
 			// bitte goodie auf y 0 positionieren, sonst hab ich keine collision
 			GameObject newGoodie = Instantiate(allGoodies[ItemType], new Vector3(x,0,z), Quaternion.identity) as GameObject;
-			newGoodie.GetComponent<GoodieParams>().id = GoodieID;
-			newGoodie.GetComponent<GoodieParams>().takenBy = TakenBy;
+			GoodieParams GoodieScript = newGoodie.GetComponent<GoodieParams>();
+			GoodieScript.id = GoodieID;
+			GoodieScript.takenBy = TakenBy;
 
-			//goodie neu positionieren
-			if (TakenBy == PlayerName) newGoodie.GetComponent<GoodieParams>().posFromPlayer = true;
+			if (TakenBy == "None") {
+				GoodieScript.iconText.GetComponent<TextMesh>().text = "00"+ItemType;
+			} else if (TakenBy == PlayerName) {
+				//goodie neu positionieren
+				GoodieScript.posFromPlayer = true;
+				GoodieScript.iconText.GetComponent<TextMesh>().text = "YOU";
+				print ("you: "+faction);
+			} else {
+				if (faction == "1") GoodieScript.iconInvader.SetActive(true);
+				else if (faction == "2") GoodieScript.iconPacman.SetActive(true);
+				else if (faction == "3") GoodieScript.iconGalaga.SetActive(true);
+				GoodieScript.iconText.GetComponent<TextMesh>().text = TakenBy;
+				print ("enemy: "+faction);
+			}
 
 			//in den unterordner schieben
 			newGoodie.transform.parent = transform;
-			newGoodie.transform.localEulerAngles = new Vector3(90,0,0);
-
+			newGoodie.transform.localEulerAngles = new Vector3(90,UnityEngine.Random.Range(0,360),0);
 			GoodieCounter++;
 		}
 	}

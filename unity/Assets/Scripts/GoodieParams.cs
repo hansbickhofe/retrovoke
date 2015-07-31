@@ -11,12 +11,20 @@ public class GoodieParams : MonoBehaviour {
 	public string takenBy = "";
 	public int type ;
 	public bool posFromPlayer = false;
+
+	public GameObject iconGalaga;
+	public GameObject iconPacman;
+	public GameObject iconInvader;
+	public GameObject iconText;
 	
 	public GameObject playerPosition;
 
 	// Use this for initialization
 	void Start () {
 		playerPosition = GameObject.Find("PlayerObj");
+		iconGalaga.SetActive(false);
+		iconPacman.SetActive(false);
+		iconInvader.SetActive(false);
 	}
 
 	void Update () {

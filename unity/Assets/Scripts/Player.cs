@@ -43,7 +43,7 @@ public class Player : MonoBehaviour {
 	float shipDir;
 	public float demoSpeed;
 
-	public float ItemTime = 10;
+	public float ItemTime = 30;
 
 	//public string hasitemid ;
 	public int hasitemtype ;
@@ -138,7 +138,7 @@ public class Player : MonoBehaviour {
 				hasItem = true;
 				ItemId = itemID;
 				Debug.Log("Pickup: "+ itemID);
-				ItemTime = 10;
+				ItemTime = 30;
 				GameDataScript.RefreshGameDataOnce();
 			}
 
