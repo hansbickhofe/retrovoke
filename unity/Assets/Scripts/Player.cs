@@ -22,11 +22,15 @@ public class Player : MonoBehaviour {
 	public Text TimeText;
 	public Text StatsButton;
 
+	public Text AlertText;
+
 
 	private string pickUpUrl = "https://retrohunter-987.appspot.com/pickup";
 	private string storeUrl = "https://retrohunter-987.appspot.com/store";
 	private string dropUrl = "https://retrohunter-987.appspot.com/drop";
 	private string scoreUrl = "https://retrohunter-987.appspot.com/score";
+
+	private string alertUrl = "https://retrohunter-987.appspot.com/msglast";
 
 	// private string pickUpUrl = "http://localhost:15080/pickup";
 	// private string storeUrl = "http://localhost:15080/store";
@@ -35,13 +39,14 @@ public class Player : MonoBehaviour {
 	public string playername;
 	public string playercode;
 	public bool hasItem = false;
+	public bool itemAvailTest = false;
 	public string ItemId;
 	public int ItemType;
 	public float posX;
 	public float posZ;
 	GetLocation myGPS;
-	public float lat = 50.944303f;
-	public float lon =  6.937723f;
+	public float lat = 50.935340f;
+	public float lon =  7.008536f;
 	public float multiX = 4500;
 	public float multiY = 7000;
 	Vector3 playerRotation;
@@ -49,10 +54,10 @@ public class Player : MonoBehaviour {
 	public float demoSpeed;
 	public string currentPit;
 
-	public float ItemTime = 30;
+	public float ItemTime;
 
 	//public string hasitemid ;
-	public int hasitemtype ;
+	public int hasitemtype;
 
 	// Use this for initialization
 	void Start () {
@@ -66,6 +71,8 @@ public class Player : MonoBehaviour {
 		ItemId = "" ;
 
 		ScoreText.text = "SCORE\n"+PlayerPrefs.GetInt("PlayerScore");
+		MessageText.text = "";
+		StartCoroutine(GetAlert());
 	}
 
 	void Update(){
@@ -106,11 +113,13 @@ public class Player : MonoBehaviour {
 				// itemdarstellung refreshen
 				GameDataScript.RefreshGameDataOnce();
 			}
+			TimeText.text = "Time\n"+(int)ItemTime;
 		} else {
+			TimeText.text = "no\nitem";
 			StatsButton.text = "STATS";
 		}
 
-		TimeText.text = "Time\n"+(int)ItemTime;
+
 	}
 
 	void Click(string Target){
@@ -120,34 +129,39 @@ public class Player : MonoBehaviour {
 	}
 
 	void OnTriggerEnter(Collider other) {
-		// pickup item
-		if (other.gameObject.tag == "Goodie" && !hasItem && other.gameObject.GetComponent<GoodieParams>().takenBy == "None") {
-			hasItem = true;
-			ItemId = other.gameObject.GetComponent<GoodieParams>().id;
-			ItemType = other.gameObject.GetComponent<GoodieParams>().type;
-			Debug.Log("Valid Hit at :" + ItemId + " " + ItemType.ToString());
-			MessageText.text = "ITEM PICKED\n##GO to the\nPIXEL PIT##";
-			StartCoroutine(PickupItem());
-		}
+		if (!GameDataScript.gamePause) {
 
-		if (other.gameObject.tag == "Goodie" && other.gameObject.GetComponent<GoodieParams>().takenBy != "None" && other.gameObject.GetComponent<GoodieParams>().takenBy != playername) {
-			Debug.Log("Allready taken by:" + other.gameObject.GetComponent<GoodieParams>().takenBy);
+			// pickup item
+			if (other.gameObject.tag == "Goodie" && !hasItem && !itemAvailTest && other.gameObject.GetComponent<GoodieParams>().takenBy == "None") {
+				hasItem = true;
+				itemAvailTest = true;
+				ItemId = other.gameObject.GetComponent<GoodieParams>().id;
+				ItemType = other.gameObject.GetComponent<GoodieParams>().type;
+				//Debug.Log("Valid Hit at :" + ItemId + " " + ItemType.ToString());
+				showIngameMessage("ITEM PICKED\n##GO to the\nPIXEL PIT##");
+				StartCoroutine(PickupItem());
+			}
+			
+			if (other.gameObject.tag == "Goodie" && other.gameObject.GetComponent<GoodieParams>().takenBy != "None" && other.gameObject.GetComponent<GoodieParams>().takenBy != playername) {
+				Debug.Log("Allready taken by:" + other.gameObject.GetComponent<GoodieParams>().takenBy);
+			}
 		}
+	}
 
-		//drop item
-		if (other.gameObject.tag == "Pit" && hasItem) {
-			print(other.gameObject.name);
-			currentPit = other.gameObject.name;
-			StartCoroutine(StoreItem());
+	void OnTriggerStay(Collider other) {
+		if (!GameDataScript.gamePause) {
+			//drop item
+			if (other.gameObject.tag == "Pit" && hasItem && !itemAvailTest) {
+				hasItem = false;
+				currentPit = other.gameObject.name;
+				StartCoroutine(StoreItem());
+			}
 		}
-
-//		if (other.gameObject.tag == "Pit") {
-//			PixelVolcano();
-//		}
 	}
 
 	void OnApplicationQuit() {
 		print ("quit");
+
 		StartCoroutine(DropItem());
 	}
 	
@@ -156,7 +170,7 @@ public class Player : MonoBehaviour {
 		form.AddField("name", playername);
 		form.AddField("usercode", playercode);
 		form.AddField("geopos", transform.position.z+","+transform.position.x);
-		form.AddField("heading", Input.compass.trueHeading.ToString("R"));
+		form.AddField("heading", "0");
 		form.AddField("itemid", ItemId);
         form.AddField("itemtype", ItemType);
 		WWW pickupResponse = new WWW(pickUpUrl, form);
@@ -171,21 +185,24 @@ public class Player : MonoBehaviour {
 			//fehler bei pick up
 			if (Status != "item picked") {
 				hasItem = false;
+				itemAvailTest = false;
 				ItemId = "";
 				ItemType = 0;
-				MessageText.text = "PICKUP FAILED\n#ITEM OWNED BY\nOTHER PLAYER#";
+				showIngameMessage("PICKUP FAILED\n#ITEM OWNED BY\nOTHER PLAYER#");
 			}
 			else {
 				hasItem = true;
+				itemAvailTest = false;
 				ItemId = itemID;
 				Debug.Log("Pickup: "+ itemID);
-				ItemTime = 30;
+				ItemTime = 180;
 				GameDataScript.RefreshGameDataOnce();
 			}
 
 		} else {	
 			Debug.Log("Error: "+ pickupResponse.error);
 			hasItem = false;
+			itemAvailTest = false;
 		}
 	}
 
@@ -194,7 +211,7 @@ public class Player : MonoBehaviour {
 		form.AddField("name", playername);
 		form.AddField("usercode", playercode);
 		form.AddField("geopos", transform.position.z+","+transform.position.x);
-		form.AddField("heading", Input.compass.trueHeading.ToString("R"));
+		form.AddField("heading", "0");
 		form.AddField("itemid", ItemId);
 		form.AddField("itemtype", ItemType);
 		WWW dropResponse = new WWW(dropUrl, form);
@@ -211,7 +228,7 @@ public class Player : MonoBehaviour {
 			if (Status == "item dropped") {
 				hasItem = false;
 				ItemId = "0" ;
-
+				TimeText.text = "no\nitem";
 				// itemdarstellung refreshen
 				GameDataScript.RefreshGameDataOnce();
 			}
@@ -228,7 +245,7 @@ public class Player : MonoBehaviour {
 		form.AddField("name", playername);
 		form.AddField("usercode", playercode);
 		form.AddField("geopos", transform.position.z+","+transform.position.x);
-		form.AddField("heading", Input.compass.trueHeading.ToString("R"));
+		form.AddField("heading", "0");
 		form.AddField("itemid", ItemId);
 		form.AddField("itemtype", ItemType);
 		WWW storeResponse = new WWW(storeUrl, form);
@@ -244,13 +261,16 @@ public class Player : MonoBehaviour {
 			if (Status == "item stored") {
 				hasItem = false;
 				ItemId = "" ;
-				MessageText.text = "ITEM SUCCESSFULLY \n#Crunched!#";
+				showIngameMessage("ITEM SUCCESS-\nFULLY \n#Crunched!#");
 				StartCoroutine(GetScore());
 				PixelVolcano();
+				TimeText.text = "no\nitem";
 				GameDataScript.RefreshGameDataOnce();
+			} else {
+				hasItem = true;
 			}
-			
-		} else {	
+		} else {
+
 			Debug.Log("Error: "+ storeResponse.error);
 		}
 	}
@@ -275,8 +295,39 @@ public class Player : MonoBehaviour {
 		}
 	}	
 
-	void PixelVolcano() {
 
+	private IEnumerator GetAlert() {
+		WWWForm form = new WWWForm();
+		form.AddField("name", playername);
+		
+		WWW sendAlertRequest = new WWW(alertUrl, form);
+		
+		yield return sendAlertRequest;
+		
+		if (sendAlertRequest.error == null) {
+			var N = JSON.Parse(sendAlertRequest.text);
+			if (N[0]["msg"] != "") AlertText.text = N[0]["msg"];
+			Debug.Log(N[0]["msg"]);
+		} else {
+			Debug.Log("Error: "+ sendAlertRequest.error);
+		}
+
+		yield return new WaitForSeconds(60);
+		StartCoroutine(GetAlert());
+	}
+
+	void showIngameMessage(string msgText){
+		MessageText.text = msgText;
+		StartCoroutine (resetMsgText());
+	}
+
+	private IEnumerator resetMsgText() {
+		yield return new WaitForSeconds(3);
+		MessageText.text = "";
+	}
+
+
+	void PixelVolcano() {
 		for (int i=0; i < 50; i++){
 			Vector3 initPos = Vector3.zero;
 
@@ -303,7 +354,7 @@ public class Player : MonoBehaviour {
 			newParticle.GetComponent<Renderer>().material.color = newColor;
 
 			//force
-			newParticle.GetComponent<Rigidbody>().AddForce(Vector3.up*10);
+			newParticle.GetComponent<Rigidbody>().AddForce(Vector3.up*250);
 		}
 	}
 }

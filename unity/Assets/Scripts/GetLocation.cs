@@ -13,15 +13,14 @@ public class GetLocation : MonoBehaviour
 		StartCoroutine("StartGPS");
 	}
 	
-	IEnumerator StartGPS()
-	{
+	IEnumerator StartGPS() {
 		output = "Searching...";
 		// First, check if user has location service enabled
 		if (!Input.location.isEnabledByUser)
 			yield break;
 		
 		// Start service before querying location
-		Input.location.Start(10f,0.5f);
+		Input.location.Start(0f,0f);
 		
 		// Wait until service initializes
 		int maxWait = 20;

@@ -63,8 +63,4 @@ public class TouchObjects : MonoBehaviour {
 
 		mainScript.ShowPage();
 	}
-
-	void OnGUI() {
-		stringToEdit = GUI.TextField(new Rect(0, 0, 400, 50), stringToEdit, 25);
-	}
 }

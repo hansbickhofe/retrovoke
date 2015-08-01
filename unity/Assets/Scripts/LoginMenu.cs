@@ -45,6 +45,7 @@ public class LoginMenu : MonoBehaviour {
 		curPage = "entername";
 		ShowPage();
 		//PlayerPrefs.DeleteAll();
+		if (PlayerPrefs.GetString("playername")!= "") Application.LoadLevel("game");  
 		playername = PlayerPrefs.GetString("playername");
 	}
 

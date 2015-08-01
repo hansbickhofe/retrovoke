@@ -43,9 +43,9 @@ public class About : MonoBehaviour {
 		if (Target == "ButtonBack" && PlayerPrefs.GetString("LoginComplete") == "ACK") Application.LoadLevel("game");
 		else Application.LoadLevel("login");
 
-		if (Target == "space") Application.LoadLevel("player");
-		if (Target == "pac") Application.LoadLevel("score");
-		if (Target == "galaga") Application.LoadLevel("login");
+//		if (Target == "space") Application.LoadLevel("player");
+//		if (Target == "pac") Application.LoadLevel("score");
+//		if (Target == "galaga") Application.LoadLevel("login");
 	}
 }
 

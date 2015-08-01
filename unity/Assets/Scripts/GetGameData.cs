@@ -5,7 +5,8 @@ using System.Collections;
 
 
 public class GetGameData : MonoBehaviour {
-	
+
+	public bool gamePause = false;
 	public GameObject[] allGoodies;
 	//public string[] goodieStat;
 	//int goodieID;

@@ -6,16 +6,15 @@ using System.Collections;
 public class NavToPosition : MonoBehaviour {
 
 	GetLocation myGPS;
-	GetGameData gameData;
-
-
+	public GetGameData GameDataScript;
+	
 	//public GameObject DebugTextfield;
 
-	public float lat = 50.944303f;
-	public float lon =  6.937723f;
+	public float lat;
+	public float lon;
 	public float multiX = 4500;
 	public float multiY = 7000;
-	public float time = 5;
+	public float time;
 	private string url = "https://retrohunter-987.appspot.com/pos";
 	// private string url = "http://localhost:15080/pos";
 
@@ -26,7 +25,7 @@ public class NavToPosition : MonoBehaviour {
 	float camX;
 	float camZ;
 
-	float shipDir;
+	int shipDir;
 
 	public GameObject player;
 	public GameObject Galaga;
@@ -48,11 +47,10 @@ public class NavToPosition : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		myGPS = GetComponent<GetLocation>();
-		gameData = GetComponent<GetGameData>();
-		//gameData.CreateNewGoodie();
 
-		posX = (6.937723f - lon)*multiX;
-		posZ = (50.944303f - lat)*multiY;
+		posX = (7.008536f - lon)*multiX;
+		posZ = (50.935340f - lat)*multiY;
+		print ("7.008536f"+lon);
 		
 		playername = PlayerPrefs.GetString("playername");
 		playercode = PlayerPrefs.GetString("playercode");
@@ -90,35 +88,21 @@ public class NavToPosition : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-
-//		//mouse click
-//		if (Input.GetMouseButtonDown(0)){
-//			Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
-//			RaycastHit hitClick;
-//			
-//			if (Physics.Raycast(ray, out hitClick)){
-//				Debug.Log ("Touched: "+hitClick.collider.name);
-//				Click (hitClick.collider.name);
-//			}
-//		}
-//		
-//		// touch input
-//		if (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began)
-//		{
-//			RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint((Input.GetTouch (0).position)), Vector2.zero);
-//			
-//			if (hit.collider != null)
-//			{
-//				Debug.Log ("Touched: "+hit.collider.name);
-//				Click (hit.collider.name);
-//			}
-//		}
-
-
 		if (myGPS.gpsReady){
+			print ("gps");
 			posX = (Input.location.lastData.longitude - lon)*multiX;
 			posZ = (Input.location.lastData.latitude - lat)*multiY;
-			shipDir = Input.compass.trueHeading;
+			shipDir = (int) Input.compass.trueHeading;
+
+			// camera
+			camX = player.transform.position.x;
+			if (player.transform.position.x < -10f) camX = -10f;
+			if (player.transform.position.x > 10f) camX = 10f;
+			
+			camZ = player.transform.position.z;
+			if (player.transform.position.z < -14f) camZ = -14f;
+			if (player.transform.position.z > 14f) camZ = 14f;
+
 		} else {
 			 
 			playerRotation = new Vector3(0,0,0);
@@ -142,7 +126,6 @@ public class NavToPosition : MonoBehaviour {
 				posZ -= demoSpeed;
 				shipDir = 180;
 			}
-
 
 			// camera
 			camX = player.transform.position.x;
@@ -173,14 +156,15 @@ public class NavToPosition : MonoBehaviour {
 		else inRange = true;
 
 		if (inRange){
-			player.transform.localScale = new Vector3(.25f,.25f,.25f);
+			GameDataScript.gamePause = false;
+			player.transform.localScale = new Vector3(.5f,.5f,.5f);
 			player.transform.position = new Vector3(posX,0,posZ);
 			playerRotation = new Vector3(0,shipDir,0);
 			player.transform.rotation = Quaternion.Slerp(player.transform.rotation, Quaternion.Euler(playerRotation), Time.deltaTime * 5);
 			Cam.position = new Vector3(camX,10,camZ-6f);
 			OutText.SetActive(false);
-			
 		} else {
+			GameDataScript.gamePause = true;
 			outOfEvoke();
 		}
 
@@ -199,7 +183,8 @@ public class NavToPosition : MonoBehaviour {
 			form.AddField("name", playername);
 			form.AddField("usercode", playercode);
 			form.AddField("geopos", posZ+","+posX);
-			form.AddField("heading", Input.compass.trueHeading.ToString("R"));
+			//form.AddField("heading", Input.compass.trueHeading.ToString("R"));
+			form.AddField("heading", "0");
 			form.AddField("itemid", 0);
 			form.AddField("beaconinrange", 0);
 			WWW sendPosition = new WWW(url, form);
@@ -209,9 +194,8 @@ public class NavToPosition : MonoBehaviour {
 			if (sendPosition.error == null) {
 				var N = JSON.Parse(sendPosition.text);
 			} else {
-//				Debug.Log("Error: "+ sendPosition.error);
-			}
-//			Debug.Log ("OnCoroutine: "+(int)Time.time); 
+				Debug.Log("Error: "+ sendPosition.error);
+			} 
 			yield return new WaitForSeconds(time);
 			}	
 	}
@@ -223,10 +207,4 @@ public class NavToPosition : MonoBehaviour {
 		player.transform.Rotate(new Vector3(Time.deltaTime * idleSpeed,Time.deltaTime * idleSpeed,0));
 		Cam.position = new Vector3(camX,20,camZ-10);
 	}
-
-//	void Click(string Target){
-//		if (Target == "StatsButton") {
-//			Application.LoadLevel("player");
-//		}
-//	}
 }
